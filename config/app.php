@@ -32,7 +32,7 @@ const BDD_USER   = 'root';
 const BDD_PASS   = '';
 
 /* --------------------------- API distante ------------------------------- */
-const API_DISTANTE = 'https://apiassureappci-production.up.railway.app/api';
+const API_DISTANTE = 'https://apiassureappci-production-7708.up.railway.app/api';
 
 /* --------------------------- API Node locale ---------------------------- */
 const API_NODE_BASE = 'http://localhost:4000/api';
