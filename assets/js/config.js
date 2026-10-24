@@ -6,25 +6,28 @@
  * En file:// (hors serveur), on retombe sur l'API distante.
  */
 
-const REMOTE_API = 'https://apiassureappci-production.up.railway.app/api';
+const REMOTE_API = "https://apiassureappci-production-7708.up.railway.app/api";
 
-const GOPHARMA_CONFIG = (typeof window !== 'undefined' && window.GOPHARMA_CONFIG) || {};
+const GOPHARMA_CONFIG =
+  (typeof window !== "undefined" && window.GOPHARMA_CONFIG) || {};
 
 const CONFIG = {
-  ENV: GOPHARMA_CONFIG.env || 'local',
+  ENV: GOPHARMA_CONFIG.env || "local",
   /* '/api' est résolu côté PHP :
      - mode local  : la route est exécutée par api/index.php (MySQL locale)
      - mode prod   : la route est relayée vers l'API distante */
   API_BASE_URL:
     GOPHARMA_CONFIG.apiBase ||
-    (typeof window !== 'undefined' && window.location.protocol === 'file:' ? REMOTE_API : '/api'),
-  SESSION_KEY: 'gopharma.pharmacie.session',
-  TYPE_GERANT: 'Gestionnaire de pharmacie',
-  MODE_PAIEMENT_DEFAUT: 'Wave',
+    (typeof window !== "undefined" && window.location.protocol === "file:"
+      ? REMOTE_API
+      : "/api"),
+  SESSION_KEY: "gopharma.pharmacie.session",
+  TYPE_GERANT: "Gestionnaire de pharmacie",
+  MODE_PAIEMENT_DEFAUT: "Wave",
   FONCTIONNALITES: {
-    NEWSLETTER: 'NEWSLETTER',
-    ANNONCES: 'ANNONCES',
-    STATS_BASE: 'STATS_BASE',
-    STATS_AVANCEES: 'STATS_AVANCEES',
+    NEWSLETTER: "NEWSLETTER",
+    ANNONCES: "ANNONCES",
+    STATS_BASE: "STATS_BASE",
+    STATS_AVANCEES: "STATS_AVANCEES",
   },
 };
