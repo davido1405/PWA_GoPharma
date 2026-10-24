@@ -1,20 +1,24 @@
 # GoPharma — État du projet et décision de mise en ligne
 
-> **Date** : 24 octobre 2026 (v2 — après correctifs P0-1 / P0-2 / P0-4)
+> **Date** : 24 octobre 2026 (v3 — merge vérifié, API déployée sondée)
 > **Périmètre** : application web `D:\AssurAppCI-Web` (front PHP/PWA) + API Node `D:\Bureau\AssurAppCI\APIassureAppCI`
-> **Méthode** : vérifications locales uniquement (front PHP, API `localhost:4000`, MySQL `assurappci`). Aucune cible distante interrogée. Aucun secret affiché.
+> **Méthode** : vérifications locales (front PHP, API `localhost:4000`, MySQL `assurappci`) **et**, sur demande,
+> sondes **GET en lecture seule** sur l'API déployée (`apiassureappci-production.up.railway.app`) — aucun jeton,
+> aucune écriture, aucun secret affiché.
 > **Rapports détaillés** : `RAPPORT_RECETTE_FONCTIONNELLE.md` (v4.4), `RAPPORT_SECURITE.md` (90/90).
 
 ---
 
 ## 1. Verdict
 
-### ⏳ Presque — 2 bloquants restants, tous deux hors du poste local
+### ⛔ Pas encore — 2 bloquants de déploiement, désormais mesurés
 
-Les trois bloquants qui dépendaient du code du front sont **corrigés et vérifiés** (§4). Il reste :
+Les trois bloquants qui dépendaient du code du front sont **corrigés et vérifiés** (§4). Il reste, **vérifié le 24/10** :
 
-1. **l'API réellement déployée** (merge de la branche sécurité + variables Railway + CORS) ;
-2. **la base de données de production** (schéma, contenu, comptes réels).
+1. **l'API réellement déployée** : le merge n'a pas été fait (branche absente de GitHub) et la prod exécute
+   l'ancien code (`/docs` ouvert, CORS `*`, pas de garde JWT) ;
+2. **la base de données de production** : les routes publiques répondent **500** ou **ne répondent pas**
+   (`/api/pharmacie` : aucun retour en 120 s) — l'annuaire public est inutilisable.
 
 | Domaine | État | Verdict |
 |---|---|---|
@@ -25,10 +29,11 @@ Les trois bloquants qui dépendaient du code du front sont **corrigés et vérif
 | **Configuration de production du front** | `api_base()` bascule local ⇄ Railway | ✅ **corrigé** |
 | **Relais PHP `/api` fantôme** | règle morte supprimée, 404 JSON propre | ✅ **corrigé** |
 | **Bascule `APP_ENV` inerte** | filet de sécurité par hôte + `est_local()` | ✅ **corrigé** |
-| **API réellement déployée** | Branche sécurité non mergée dans `main` | ❌ **BLOQUANT** |
-| **Base de données de production** | Non vérifiée (schéma + contenu) | ❌ **BLOQUANT** |
+| **API réellement déployée** | Branche sécurité **non mergée** (absente de GitHub, `main` = `070e7f6`) | ❌ **BLOQUANT** |
+| **API de production — routes** | `/api/pharmacie` sans réponse (120 s), 4 routes en 500, `/docs` ouvert, CORS `*` | ❌ **BLOQUANT** |
+| **Base de données de production** | Schéma/contenu en erreur (500 sur assurance, forfaits, annonces) | ❌ **BLOQUANT** |
 | Conformité (mentions légales, confidentialité) | Pages absentes | ⚠️ Avant ouverture publique |
-| Exploitation (sauvegardes, supervision, versionnement) | Non en place | ⚠️ À faire |
+| Exploitation (sauvegardes, supervision, versionnement) | Sauvegardes/supervision absentes ; **versionnement fait** (`PWA_GoPharma`) | ⚠️ Partiel |
 | Produit (contenu, périmètre) | 21 pharmacies, forfait Gratuit | ⚠️ Correct pour une bêta |
 
 ---
@@ -106,7 +111,15 @@ et le test BLOQUÉ est explicitement annoncé par le harnais.
 
 **Impact** : la production tourne **sans** contrôle JWT strict, sans bcrypt, sans rate-limit de connexion, avec `/docs` exposé et CORS ouvert — alors que le 90/90 a été établi sur la branche.
 
-**Correctif** : `git checkout main && git merge --ff-only impl/securite-jwt-bcrypt && git push origin main`, puis redéployer et rejouer `node tests/security/run-security-tests.js`.
+**État au 24/10** :
+
+- ✅ **merge local fait** : `main` est passé de `070e7f6` à **`464d182`** en fast-forward (`git merge --ff-only`) ;
+  l'arbre de travail est propre et `npm test` (Jest) rend **22/22**.
+- ❌ **push bloqué** : aucune authentification GitHub exploitable sur ce poste — le credential stocké est refusé
+  (« Password authentication is not supported »), `gh` n'est pas installé, et Git Credential Manager échoue hors
+  session interactive. `origin/main` reste donc à `070e7f6` : **la prod ne peut pas encore recevoir le correctif**.
+- ⏭️ **à faire par vous** (30 s) : `git push origin main` dans `D:\Bureau\AssurAppCI\APIassureAppCI`
+  (la fenêtre GitHub s'ouvre), puis Railway redéploie automatiquement.
 
 **Variables d'environnement à vérifier sur Railway** :
 
@@ -251,7 +264,7 @@ Nécessaire parce que **WildFly (Eclipse) occupait `127.0.0.1:8080`** sur le pos
 | 1 | **Mentions légales + politique de confidentialité** | Absentes ; obligatoires pour un service collectant des données (Côte d'Ivoire : loi n° 2013-450) | 2–3 h |
 | 2 | **En-têtes de sécurité** | `.htaccess` ne pose que `X-Content-Type-Options` ; ajouter CSP, HSTS, `X-Frame-Options`, `Referrer-Policy` | 1 h |
 | 3 | **`robots.txt` + `sitemap.xml`** | Absents ; annuaire mal indexé sans sitemap | 30 min |
-| 4 | **Versionnement du dossier web** | `D:\AssurAppCI-Web` n'est pas un dépôt git → aucun retour arrière | 15 min |
+| 4 | ~~**Versionnement du dossier web**~~ | ✅ **fait** : dépôt `PWA_GoPharma` (52 fichiers suivis), `main` = `origin/main` (`d126c2a`) | — |
 | 5 | **Sauvegardes MySQL** | Aucune politique définie | selon hébergeur |
 | 6 | **Supervision** | Aucune alerte si l'API tombe | 1 h |
 | 7 | **Photos externes** | URLs `images.unsplash.com` (une déjà en 404) → stockage propre (Cloudinary déjà branché) | à planifier |
@@ -310,6 +323,7 @@ RESTE À FAIRE
 
 **Prêt pour une bêta publique encadrée dès que P0-3 et P0-5 sont clos** :
 
+- **en l'état (24/10), l'API déployée ne rend pas le service** : annuaire sans réponse, 4 routes en 500 (P0-6) ;
 - périmètre assumé : **annuaire + espace pharmacie gratuit** ;
 - trois modules payants **visibles mais verrouillés**, aucun paiement ;
 - mention « version pilote » sur l'accueil ;
@@ -332,5 +346,5 @@ RESTE À FAIRE
 | Dépôt git du dossier web | **aucun** |
 | Harnais | `tests/functional/` (77 vérifs, `BASE_URL`), `tests/security/` (90 tests), `scripts/` smoke |
 | Base locale | `assurappci` : 21 pharmacies (19 Abidjan, 1 Bouaké, 1 Yamoussoukro), 3 sans photo, 16 assurances |
-| API Node | branche `impl/securite-jwt-bcrypt`, 13 commits devant `main` |
+| API Node | branche `impl/securite-jwt-bcrypt`, 13 commits devant `main` — **absente de GitHub** (vérifié le 24/10) |
 | Ports | API `4000` ; front `8080` (occupé par WildFly en IPv4 sur ce poste → `8081` utilisé pour les tests) |
