@@ -88,20 +88,25 @@ et le test BLOQUÉ est explicitement annoncé par le harnais.
 
 ## 3. Bloquants restants (P0)
 
-### P0-3 — L'API déployée n'a probablement pas les correctifs de sécurité ❌
+### P0-3 — Le merge n'a **pas** été fait (vérifié le 24/10) ❌
 
-**Constat** : dans `D:\Bureau\AssurAppCI\APIassureAppCI`
+**Constat** : dans `D:\Bureau\AssurAppCI\APIassureAppCI`, le 24/10 :
 
 ```
-* impl/securite-jwt-bcrypt      ← 13 commits d'avance
-  main                         ← ne contient pas 464d182
+* impl/securite-jwt-bcrypt      ← 13 commits d'avance, jamais poussée
+  main                         ← 070e7f6 (identique à origin/main)
 ```
 
-`git rev-list --left-right --count main...impl/securite-jwt-bcrypt` → **`0  13`**.
+- `git rev-list --left-right --count main...impl/securite-jwt-bcrypt` → **`0  13`** (aucun commit de la branche dans `main`).
+- `git merge-base --is-ancestor impl/securite-jwt-bcrypt origin/main` → **1** (la branche n'est pas contenue dans `origin/main`).
+- `git ls-remote --heads origin` → **une seule tête distante** : `refs/heads/main` @ `070e7f6`. La branche n'existe pas sur GitHub.
+- La base commune (`merge-base`) est **`070e7f6`**, c'est-à-dire la tête de `main` : la branche est simplement posée dessus, sans fusion.
 
-**Impact** : si Railway déploie `main` (cas par défaut), la production tourne **sans** le contrôle JWT strict, sans bcrypt, sans rate-limit de connexion, avec `/docs` potentiellement exposé — alors que le 90/90 a été établi sur la branche.
+**Confirmation par le comportement de la prod** (voir P0-6) : `/docs` et `/api-docs` répondent **200**, l'en-tête CORS vaut **`*`**, une route inconnue renvoie **404** (et non 401) et les erreurs 500 sont des pages HTML — exactement le comportement de `main` (ancien `index.js` : `cors()` sans options, Swagger toujours enregistré, pas de handler JSON). La prod **n'exécute donc pas** la branche.
 
-**Correctif** : merger `impl/securite-jwt-bcrypt` → `main` (fast-forward possible), pousser, redéployer, puis rejouer `node tests/security/run-security-tests.js`.
+**Impact** : la production tourne **sans** contrôle JWT strict, sans bcrypt, sans rate-limit de connexion, avec `/docs` exposé et CORS ouvert — alors que le 90/90 a été établi sur la branche.
+
+**Correctif** : `git checkout main && git merge --ff-only impl/securite-jwt-bcrypt && git push origin main`, puis redéployer et rejouer `node tests/security/run-security-tests.js`.
 
 **Variables d'environnement à vérifier sur Railway** :
 
@@ -116,11 +121,38 @@ et le test BLOQUÉ est explicitement annoncé par le harnais.
 > ⚠️ Le `.env` local ne contient **ni** `NODE_ENV` **ni** `CORS_ALLOWED_ORIGINS` : à définir explicitement côté hébergeur.
 > ⚠️ Le front appelle désormais Railway **directement** (P0-1) : sans `CORS_ALLOWED_ORIGINS`, rien ne fonctionnera.
 
-### P0-5 — Base de données de production non vérifiée ❌
+### P0-5 — Base de données de production : **confirmée inutilisable** ❌
 
-**Constat** : seul l'environnement local est connu — **21 pharmacies** (19 Abidjan, 1 Bouaké, 1 Yamoussoukro), 3 sans photo, 16 assurances.
+**Constat local (référence)** : **21 pharmacies** (19 Abidjan, 1 Bouaké, 1 Yamoussoukro), 3 sans photo, 16 assurances, 3 forfaits.
 
-**À vérifier côté production** : schéma importé (`assurappci.sql`), nombre de lignes, comptes réels (aucun compte de test type `0701010101`), photos accessibles.
+**Constat production (sondes du 24/10, lecture seule)** : les routes qui lisent la base **échouent toutes** —
+`500` en moins d'une seconde sur `/api/assurance`, `/api/annonces/toutes`, `/api/abonnements/forfaits`,
+`/api/abonnements/actif` ; **aucune réponse** sur `/api/pharmacie` (abandon après 120 s) et
+`/api/pharmacie/rechercher` (60 s). Le schéma importé ne correspond donc pas à celui attendu par le code
+(ou la requête `pharmacie` est bloquée). Aucune écriture n'a été tentée.
+
+**À vérifier côté production** : schéma importé (`assurappci.sql`), nombre de lignes, index sur `pharmacie`,
+comptes réels (aucun compte de test type `0701010101`), photos accessibles.
+
+### P0-6 — L'API de production ne répond pas (nouveau, 24/10) ❌
+
+Sondes **GET uniquement**, sans jeton, sans écriture, sur `https://apiassureappci-production.up.railway.app` :
+
+| Route | Prod | Local (référence) | Verdict |
+|---|---|---|---|
+| `GET /api/pharmacie` | **aucune réponse** (abandon à 120 s) | 200 — 21 fiches | ❌ annuaire public mort |
+| `GET /api/pharmacie/rechercher?q=a` | **aucune réponse** (60 s) | 200 — 21 fiches | ❌ recherche morte |
+| `GET /api/notifications` | **aucune réponse** (30 s) | 401 sans jeton | ❌ |
+| `GET /api/assurance` | **500** (HTML) | 200 — 20 lignes | ❌ |
+| `GET /api/annonces/toutes` | **500** (HTML) | 200 — 29 annonces | ❌ (corrigé par `bd0d2e5`, absent de `main`) |
+| `GET /api/abonnements/forfaits` | **500** JSON | 200 — 3 forfaits | ❌ |
+| `GET /api/abonnements/actif` | **500** JSON | 401 sans jeton | ❌ |
+| `GET /api/abonnements/utilisation/1` | **404** | 404 | ⚠️ route appelée par le front, inexistante dans l'API |
+| `GET /docs`, `GET /api-docs` | **200** | 200 | ❌ à fermer en prod (`NODE_ENV`) |
+| `OPTIONS /api/pharmacie` | **204, `Access-Control-Allow-Origin: *`** | 204, origine reflétée | ❌ CORS ouvert |
+
+**Conclusion** : la prod n'est pas « presque prête » — elle est **inutilisable en l'état**. Deux causes distinctes,
+à traiter dans cet ordre : (1) déployer le bon code (P0-3), (2) réparer la base de production (P0-5).
 
 ---
 
