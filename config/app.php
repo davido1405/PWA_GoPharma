@@ -21,7 +21,7 @@
 declare(strict_types=1);
 
 /* ----------------------------- Bascule ---------------------------------- */
-const APP_ENV    = 'local';   // 'local' | 'prod'
+const APP_ENV    = 'prod';   // 'local' | 'prod'
 const APP_DEBUG  = false;     // drapeau de débogage exposé au JS — false en production
 
 /* ------------------------ Base de données locale ------------------------ */
