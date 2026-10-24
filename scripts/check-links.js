@@ -1,10 +1,19 @@
-/* Vérifie que tous les liens locaux (src/href) des pages pointent vers des fichiers existants. */
+/* Vérifie que tous les liens locaux (src/href) des pages pointent vers des fichiers existants.
+   Les pages sont servies sans extension par router.php : « /pharmacies » résout
+   vers « pharmacies.php ». On applique la même résolution ici. */
 const fs = require('fs');
 const path = require('path');
 
 const root = path.join(__dirname, '..');
 const pages = ['index.php', 'connexion.php', 'inscription.php', 'dashboard.php'];
 const manquants = [];
+
+function existe(cible) {
+  if (!cible) return true;
+  const candidats = [cible];
+  if (!path.extname(cible)) candidats.push(cible + '.php');
+  return candidats.some((c) => fs.existsSync(path.join(root, c)));
+}
 
 for (const page of pages) {
   const fichierPage = path.join(root, page);
@@ -19,7 +28,7 @@ for (const page of pages) {
     const url = m[1];
     if (/^(https?:|#|mailto:|data:)/.test(url)) continue;
     const fichier = url.split('#')[0].split('?')[0];
-    if (fichier && !fs.existsSync(path.join(root, fichier))) {
+    if (!existe(fichier)) {
       manquants.push(`${page} -> ${url}`);
     }
   }

@@ -49,8 +49,8 @@ function attendre(condition, timeout = 20000) {
     verifier('6 fonctionnalités', nb('#fonctionnalites article') === 6, String(nb('#fonctionnalites article')));
     verifier('3 étapes', nb('#fonctionnement .rounded-2xl') === 3, String(nb('#fonctionnement .rounded-2xl')));
     verifier('3 forfaits', nb('#forfaits .card') === 3, String(nb('#forfaits .card')));
-    verifier('Lien connexion présent', nb('a[href="connexion.php"]') >= 2, String(nb('a[href="connexion.php"]')));
-    verifier('Lien inscription présent', nb('a[href="inscription.php"]') >= 1, String(nb('a[href="inscription.php"]')));
+    verifier('Lien connexion présent', nb('a[href="connexion"], a[href="connexion.php"]') >= 2, String(nb('a[href="connexion"], a[href="connexion.php"]')));
+    verifier('Lien inscription présent', nb('a[href="inscription"], a[href="inscription.php"]') >= 1, String(nb('a[href="inscription"], a[href="inscription.php"]')));
     verifier('Liens d’ancre', nb('a[href^="#"]') >= 4, String(nb('a[href^="#"]')));
 
     const menu = $('#nav-mobile');

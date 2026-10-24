@@ -27,7 +27,7 @@ require_once __DIR__ . '/config/app.php';
 <body class="bg-white">
   <header class="sticky top-0 z-50 border-b border-slate-200/70 bg-white/85 backdrop-blur">
     <div class="container-page flex h-20 items-center justify-between gap-6">
-      <a href="index.php" id="header-logo" class="flex items-center">
+      <a href="/" id="header-logo" class="flex items-center">
         <img src="assets/img/logo.png" alt="GoPharma" class="h-11 w-auto" />
       </a>
 
@@ -35,13 +35,13 @@ require_once __DIR__ . '/config/app.php';
         <a href="#fonctionnalites" class="btn-nav px-3">Fonctionnalités</a>
         <a href="#fonctionnement" class="btn-nav px-3">Fonctionnement</a>
         <a href="#forfaits" class="btn-nav px-3">Forfaits</a>
-        <a href="pharmacies.php" class="btn-nav px-3">Pharmacies</a>
+        <a href="pharmacies" class="btn-nav px-3">Pharmacies</a>
       </nav>
 
       <div class="flex items-center gap-2">
         <button type="button" class="btn-nav hidden px-3 xl:inline-flex" data-share-site>Partager le site</button>
-        <a href="inscription.php" class="btn-nav hidden px-3 xl:inline-flex">Créer un compte</a>
-        <a href="connexion.php" class="btn-primary hidden sm:inline-flex">Espace pharmacie</a>
+        <a href="inscription" class="btn-nav hidden px-3 xl:inline-flex">Créer un compte</a>
+        <a href="connexion" class="btn-primary hidden sm:inline-flex">Espace pharmacie</a>
         <button id="nav-toggle" type="button" class="min-h-[44px] min-w-[44px] rounded-xl border border-slate-200 p-2.5 text-slate-600 xl:hidden" aria-label="Ouvrir le menu">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-5 w-5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
         </button>
@@ -53,9 +53,9 @@ require_once __DIR__ . '/config/app.php';
         <a href="#fonctionnalites" class="btn-nav w-full justify-start">Fonctionnalités</a>
         <a href="#fonctionnement" class="btn-nav w-full justify-start">Fonctionnement</a>
         <a href="#forfaits" class="btn-nav w-full justify-start">Forfaits</a>
-        <a href="pharmacies.php" class="btn-nav w-full justify-start">Pharmacies</a>
-        <a href="inscription.php" class="btn-nav w-full justify-start">Créer un compte</a>
-        <a href="connexion.php" class="btn-primary mt-1 w-full">Espace pharmacie</a>
+        <a href="pharmacies" class="btn-nav w-full justify-start">Pharmacies</a>
+        <a href="inscription" class="btn-nav w-full justify-start">Créer un compte</a>
+        <a href="connexion" class="btn-primary mt-1 w-full">Espace pharmacie</a>
       </div>
     </div>
   </header>
@@ -79,7 +79,7 @@ require_once __DIR__ . '/config/app.php';
           </p>
 
           <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-            <a href="connexion.php" class="btn-primary btn-lg">
+            <a href="connexion" class="btn-primary btn-lg">
               Accéder à l'espace pharmacie
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-4 w-4"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
             </a>
@@ -329,7 +329,7 @@ require_once __DIR__ . '/config/app.php';
               <li class="flex gap-3"><span class="text-brand-500">&#10003;</span> Horaires d'ouverture</li>
               <li class="flex gap-3"><span class="text-brand-500">&#10003;</span> Localisation sur la carte</li>
             </ul>
-            <a href="inscription.php" class="btn-ghost btn-block mt-8">Commencer</a>
+            <a href="inscription" class="btn-ghost btn-block mt-8">Commencer</a>
           </div>
 
           <div class="card relative flex flex-col border-2 border-brand-800 p-7 lg:-mt-4 lg:mb-4">
@@ -344,7 +344,7 @@ require_once __DIR__ . '/config/app.php';
               <li class="flex gap-3"><span class="text-brand-500">&#10003;</span> 10 newsletters par mois</li>
               <li class="flex gap-3"><span class="text-brand-500">&#10003;</span> 5 annonces par mois</li>
             </ul>
-            <a href="inscription.php" class="btn-primary btn-block mt-8">Choisir Standard</a>
+            <a href="inscription" class="btn-primary btn-block mt-8">Choisir Standard</a>
           </div>
 
           <div class="card flex flex-col p-7">
@@ -358,7 +358,7 @@ require_once __DIR__ . '/config/app.php';
               <li class="flex gap-3"><span class="text-brand-500">&#10003;</span> Badge vérifié</li>
               <li class="flex gap-3"><span class="text-brand-500">&#10003;</span> Priorité dans les recherches</li>
             </ul>
-            <a href="inscription.php" class="btn-ghost btn-block mt-8">Choisir Premium</a>
+            <a href="inscription" class="btn-ghost btn-block mt-8">Choisir Premium</a>
           </div>
         </div>
       </div>
@@ -376,10 +376,10 @@ require_once __DIR__ . '/config/app.php';
             Connectez-vous à votre espace gérant et retrouvez votre tableau de bord en un clic.
           </p>
           <div class="relative mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-            <a href="inscription.php" class="btn btn-lg bg-white text-brand-800 hover:bg-brand-50">
+            <a href="inscription" class="btn btn-lg bg-white text-brand-800 hover:bg-brand-50">
               Créer mon espace
             </a>
-            <a href="connexion.php" class="btn btn-lg border border-white/40 text-white hover:bg-white/10">
+            <a href="connexion" class="btn btn-lg border border-white/40 text-white hover:bg-white/10">
               Se connecter
             </a>
           </div>
@@ -424,15 +424,15 @@ require_once __DIR__ . '/config/app.php';
           <li><a href="#fonctionnalites" class="hover:text-brand-700">Fonctionnalités</a></li>
           <li><a href="#fonctionnement" class="hover:text-brand-700">Fonctionnement</a></li>
           <li><a href="#forfaits" class="hover:text-brand-700">Forfaits</a></li>
-          <li><a href="pharmacies.php" class="hover:text-brand-700">Pharmacies</a></li>
+          <li><a href="pharmacies" class="hover:text-brand-700">Pharmacies</a></li>
         </ul>
       </div>
       <div>
         <h4 class="text-sm font-semibold text-slate-900">Espace gérant</h4>
         <ul class="mt-4 space-y-2.5 text-sm text-slate-600">
-          <li><a href="inscription.php" class="hover:text-brand-700">Créer un compte</a></li>
-          <li><a href="connexion.php" class="hover:text-brand-700">Connexion</a></li>
-          <li><a href="dashboard.php" class="hover:text-brand-700">Tableau de bord</a></li>
+          <li><a href="inscription" class="hover:text-brand-700">Créer un compte</a></li>
+          <li><a href="connexion" class="hover:text-brand-700">Connexion</a></li>
+          <li><a href="dashboard" class="hover:text-brand-700">Tableau de bord</a></li>
         </ul>
       </div>
     </div>

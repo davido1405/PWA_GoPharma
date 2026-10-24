@@ -139,7 +139,7 @@ const Session = (() => {
     require() {
       const s = read();
       if (!s || !s.codeUtilisateur) {
-        window.location.replace('connexion.php');
+        window.location.replace('/connexion');
         return null;
       }
       return s;

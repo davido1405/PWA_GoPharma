@@ -28,7 +28,7 @@ require_once __DIR__ . '/config/app.php';
   <aside id="sidebar"
          class="fixed inset-y-0 left-0 z-50 flex w-72 -translate-x-full flex-col border-r border-slate-200 bg-white transition-transform duration-200 lg:translate-x-0">
     <div class="flex h-20 items-center justify-between px-6">
-      <a href="index.php">
+      <a href="/">
         <img src="assets/img/logo.png" alt="GoPharma" class="h-11 w-auto" />
       </a>
       <button id="sidebar-close" type="button" class="rounded-lg p-2 text-slate-400 hover:bg-slate-100 lg:hidden" aria-label="Fermer le menu">
@@ -694,8 +694,8 @@ require_once __DIR__ . '/config/app.php';
       <div class="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-2 px-4 py-6 text-xs text-slate-500 sm:flex-row sm:px-6 lg:px-8">
         <p>&copy; <span id="year"></span> GoPharma — Espace pharmacie</p>
         <nav class="flex flex-wrap items-center justify-center gap-2" aria-label="Navigation publique">
-          <a href="pharmacies.php" class="btn-nav">Pharmacies</a>
-          <a href="connexion.php" class="btn-primary">Espace pharmacie</a>
+          <a href="pharmacies" class="btn-nav">Pharmacies</a>
+          <a href="connexion" class="btn-primary">Espace pharmacie</a>
         </nav>
       </div>
     </footer>

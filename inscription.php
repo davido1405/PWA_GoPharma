@@ -28,7 +28,7 @@ require_once __DIR__ . '/config/app.php';
       <div class="pointer-events-none absolute -left-24 -top-24 h-80 w-80 rounded-full bg-brand-600/60 blur-3xl"></div>
       <div class="pointer-events-none absolute -bottom-32 -right-16 h-96 w-96 rounded-full bg-accent-500/25 blur-3xl"></div>
 
-      <a href="index.php" class="relative">
+      <a href="/" class="relative">
         <span class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold text-white">
           <img src="assets/img/logo-icone.png" alt="" class="h-4 w-4" />
           Espace gérant
@@ -68,13 +68,13 @@ require_once __DIR__ . '/config/app.php';
     <main class="flex items-center justify-center px-5 py-10 sm:px-10">
       <div class="w-full max-w-lg">
         <div class="mb-8 flex items-center justify-between lg:hidden">
-          <a href="index.php">
+          <a href="/">
             <img src="assets/img/logo.png" alt="GoPharma" class="h-11 w-auto" />
           </a>
-          <a href="index.php" class="text-sm font-medium text-slate-500 hover:text-brand-700">Accueil</a>
+          <a href="/" class="text-sm font-medium text-slate-500 hover:text-brand-700">Accueil</a>
         </div>
 
-        <a href="connexion.php" class="mb-8 hidden items-center gap-2 text-sm font-medium text-slate-500 hover:text-brand-700 lg:inline-flex">
+        <a href="connexion" class="mb-8 hidden items-center gap-2 text-sm font-medium text-slate-500 hover:text-brand-700 lg:inline-flex">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-4 w-4"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
           Retour à la connexion
         </a>
@@ -264,12 +264,12 @@ require_once __DIR__ . '/config/app.php';
 
         <p class="mt-6 text-center text-sm text-slate-500">
           Déjà inscrit ?
-          <a href="connexion.php" class="font-semibold text-brand-700 hover:text-brand-800">Se connecter</a>
+          <a href="connexion" class="font-semibold text-brand-700 hover:text-brand-800">Se connecter</a>
         </p>
 
         <nav class="mt-8 flex flex-wrap items-center justify-center gap-2" aria-label="Navigation publique">
-          <a href="pharmacies.php" class="btn-nav">Pharmacies</a>
-          <a href="index.php" class="btn-nav">Accueil</a>
+          <a href="pharmacies" class="btn-nav">Pharmacies</a>
+          <a href="/" class="btn-nav">Accueil</a>
         </nav>
       </div>
     </main>

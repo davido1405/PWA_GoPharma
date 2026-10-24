@@ -10,7 +10,7 @@
   const togglePin = document.getElementById('toggle-pin');
 
   if (Session.get() && Session.code()) {
-    window.location.replace('dashboard.php');
+    window.location.replace('/dashboard');
     return;
   }
 
@@ -120,7 +120,7 @@
         localStorage.removeItem('gopharma.numero');
       }
 
-      window.location.href = 'dashboard.php';
+      window.location.href = '/dashboard';
     } catch (err) {
       const message =
         err instanceof ApiError

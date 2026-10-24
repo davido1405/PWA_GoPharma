@@ -1,24 +1,28 @@
 # GoPharma — État du projet et décision de mise en ligne
 
-> **Date** : 24 octobre 2026 (v3 — merge vérifié, API déployée sondée)
+> **Date** : 24 octobre 2026 (v4 — service Railway actif identifié, CORS mesuré)
 > **Périmètre** : application web `D:\AssurAppCI-Web` (front PHP/PWA) + API Node `D:\Bureau\AssurAppCI\APIassureAppCI`
 > **Méthode** : vérifications locales (front PHP, API `localhost:4000`, MySQL `assurappci`) **et**, sur demande,
-> sondes **GET en lecture seule** sur l'API déployée (`apiassureappci-production.up.railway.app`) — aucun jeton,
-> aucune écriture, aucun secret affiché.
+> sondes **GET en lecture seule** sur l'API déployée (`apiassureappci-production-7708.up.railway.app`, le service
+> réellement configuré dans `config/app.php`) — aucun jeton, aucune écriture, aucun secret affiché.
+> ⚠️ Un **second service** (`apiassureappci-production.up.railway.app`) existe sur Railway : c'est l'**ancien**,
+> non utilisé par le front. Les conclusions de la v3 le concernant ont été corrigées (voir P0-3/P0-6).
 > **Rapports détaillés** : `RAPPORT_RECETTE_FONCTIONNELLE.md` (v4.4), `RAPPORT_SECURITE.md` (90/90).
 
 ---
 
 ## 1. Verdict
 
-### ⛔ Pas encore — 2 bloquants de déploiement, désormais mesurés
+### ⛔ Pas encore — 1 bloquant de déploiement + 1 action de cohérence
 
-Les trois bloquants qui dépendaient du code du front sont **corrigés et vérifiés** (§4). Il reste, **vérifié le 24/10** :
+Les trois bloquants qui dépendaient du code du front sont **corrigés et vérifiés** (§4). L'API déployée a été
+re-sondée sur le **bon service** (`-7708`, celui de `config/app.php`) : le code sécurité y est bien actif
+(`/docs` fermé, route protégée en 401). Il reste :
 
-1. **l'API réellement déployée** : le merge n'a pas été fait (branche absente de GitHub) et la prod exécute
-   l'ancien code (`/docs` ouvert, CORS `*`, pas de garde JWT) ;
-2. **la base de données de production** : les routes publiques répondent **500** ou **ne répondent pas**
-   (`/api/pharmacie` : aucun retour en 120 s) — l'annuaire public est inutilisable.
+1. **CORS fermé sur `-7708`** : aucune réponse ne porte d'en-tête `Access-Control-Allow-Origin`, donc **aucun
+   appel navigateur** (login compris) ne passe — action côté Railway (`CORS_ALLOWED_ORIGINS`) ;
+2. **push du merge** : `main` local est à `464d182`, `origin/main` à `070e7f6` — l'authentification GitHub est
+   indisponible sur ce poste, le push reste à faire manuellement pour garantir l'alignement du dépôt et du déploiement.
 
 | Domaine | État | Verdict |
 |---|---|---|
@@ -29,9 +33,9 @@ Les trois bloquants qui dépendaient du code du front sont **corrigés et vérif
 | **Configuration de production du front** | `api_base()` bascule local ⇄ Railway | ✅ **corrigé** |
 | **Relais PHP `/api` fantôme** | règle morte supprimée, 404 JSON propre | ✅ **corrigé** |
 | **Bascule `APP_ENV` inerte** | filet de sécurité par hôte + `est_local()` | ✅ **corrigé** |
-| **API réellement déployée** | Branche sécurité **non mergée** (absente de GitHub, `main` = `070e7f6`) | ❌ **BLOQUANT** |
-| **API de production — routes** | `/api/pharmacie` sans réponse (120 s), 4 routes en 500, `/docs` ouvert, CORS `*` | ❌ **BLOQUANT** |
-| **Base de données de production** | Schéma/contenu en erreur (500 sur assurance, forfaits, annonces) | ❌ **BLOQUANT** |
+| **API réellement déployée** | `-7708` : `/docs` 404, route protégée 401 → **code sécurité actif** | ✅ **déployé** (push de cohérence à faire) |
+| **API de production — routes** | `-7708` : 4 routes publiques en 200, mais **aucun en-tête CORS** | ❌ **BLOQUANT (CORS)** |
+| **Base de données de production** | `-7708` : routes de lecture en 200 (contenu réel non audité) | ⚠️ **fonctionnelle**, contenu à vérifier |
 | Conformité (mentions légales, confidentialité) | Pages absentes | ⚠️ Avant ouverture publique |
 | Exploitation (sauvegardes, supervision, versionnement) | Sauvegardes/supervision absentes ; **versionnement fait** (`PWA_GoPharma`) | ⚠️ Partiel |
 | Produit (contenu, périmètre) | 21 pharmacies, forfait Gratuit | ⚠️ Correct pour une bêta |
@@ -54,7 +58,7 @@ Les trois bloquants qui dépendaient du code du front sont **corrigés et vérif
 | 10 | **Mobile** | 390 px : `overflow = 0` ; 320 px : pas de débordement |
 | 11 | **Aucun secret dans le dossier web** | Pas de `.env`, pas de clé, `BDD_PASS = ''` (poste local) |
 | 12 | **Photo manquante** | `PHARM001` : photo 404 → repli sur l'icône |
-| 13 | **Bascule production du front** | En-tête `Host: gopharma.ci` → `apiBase: 'https://apiassureappci-production.up.railway.app/api'` |
+| 13 | **Bascule production du front** | En-tête `Host: gopharma.ci` → `apiBase: 'https://apiassureappci-production-7708.up.railway.app/api'` |
 
 > **Nuance sur `npm test`** : les smoke tests tournent dans jsdom avec des **réponses API simulées** (dont un forfait Standard) ; ils valident le **rendu**, pas l'état verrouillé. L'état réel est couvert par le harnais fonctionnel et les captures.
 
@@ -93,79 +97,87 @@ et le test BLOQUÉ est explicitement annoncé par le harnais.
 
 ## 3. Bloquants restants (P0)
 
-### P0-3 — Le merge n'a **pas** été fait (vérifié le 24/10) ❌
+### P0-3 — Merge local fait, push encore bloqué ; le service actif exécute bien le code sécurité ⚠️
 
 **Constat** : dans `D:\Bureau\AssurAppCI\APIassureAppCI`, le 24/10 :
 
 ```
 * impl/securite-jwt-bcrypt      ← 13 commits d'avance, jamais poussée
-  main                         ← 070e7f6 (identique à origin/main)
+  main                         ← 464d182 (merge --ff-only local)
+  origin/main                  ← 070e7f6 (GitHub n'a pas reçu le merge)
 ```
 
-- `git rev-list --left-right --count main...impl/securite-jwt-bcrypt` → **`0  13`** (aucun commit de la branche dans `main`).
-- `git merge-base --is-ancestor impl/securite-jwt-bcrypt origin/main` → **1** (la branche n'est pas contenue dans `origin/main`).
-- `git ls-remote --heads origin` → **une seule tête distante** : `refs/heads/main` @ `070e7f6`. La branche n'existe pas sur GitHub.
-- La base commune (`merge-base`) est **`070e7f6`**, c'est-à-dire la tête de `main` : la branche est simplement posée dessus, sans fusion.
-
-**Confirmation par le comportement de la prod** (voir P0-6) : `/docs` et `/api-docs` répondent **200**, l'en-tête CORS vaut **`*`**, une route inconnue renvoie **404** (et non 401) et les erreurs 500 sont des pages HTML — exactement le comportement de `main` (ancien `index.js` : `cors()` sans options, Swagger toujours enregistré, pas de handler JSON). La prod **n'exécute donc pas** la branche.
-
-**Impact** : la production tourne **sans** contrôle JWT strict, sans bcrypt, sans rate-limit de connexion, avec `/docs` exposé et CORS ouvert — alors que le 90/90 a été établi sur la branche.
-
-**État au 24/10** :
-
+- `git rev-list --left-right --count main...impl/securite-jwt-bcrypt` → **`0  13`** avant merge ; après merge, la branche est contenue dans `main`.
+- `git ls-remote --heads origin` → **une seule tête distante** : `refs/heads/main` @ `070e7f6`. La branche n'a jamais existé sur GitHub.
 - ✅ **merge local fait** : `main` est passé de `070e7f6` à **`464d182`** en fast-forward (`git merge --ff-only`) ;
   l'arbre de travail est propre et `npm test` (Jest) rend **22/22**.
 - ❌ **push bloqué** : aucune authentification GitHub exploitable sur ce poste — le credential stocké est refusé
   (« Password authentication is not supported »), `gh` n'est pas installé, et Git Credential Manager échoue hors
-  session interactive. `origin/main` reste donc à `070e7f6` : **la prod ne peut pas encore recevoir le correctif**.
+  session interactive. `origin/main` reste donc à `070e7f6`.
 - ⏭️ **à faire par vous** (30 s) : `git push origin main` dans `D:\Bureau\AssurAppCI\APIassureAppCI`
   (la fenêtre GitHub s'ouvre), puis Railway redéploie automatiquement.
 
-**Variables d'environnement à vérifier sur Railway** :
+**Correction de la v3** : la conclusion « la prod exécute l'ancien code » avait été tirée du **mauvais service**
+(`apiassureappci-production.up.railway.app`, ancien). Sur le service réellement configuré
+(`apiassureappci-production-7708.up.railway.app`), le comportement observé est celui du **code sécurité** :
+`/docs` et `/api-docs` → **404**, `/api/pharmacies` → **401 « Token d'authentification requis »**.
+Le déploiement est donc déjà conforme ; le push reste nécessaire pour que **GitHub, le dépôt local et le
+déploiement** racontent la même histoire (et pour éviter qu'un futur redéploiement depuis `origin/main` ne
+réinstalle l'ancien code).
+
+**Variables d'environnement à vérifier sur Railway (`-7708`)** :
 
 | Variable | Valeur attendue en production | Effet si absente |
 |---|---|---|
 | `NODE_ENV` | `production` | Swagger exposé, CORS ouvert à toutes les origines |
-| `CORS_ALLOWED_ORIGINS` | `https://votre-domaine` | `origin: false` → **toutes** les requêtes du site bloquées |
+| `CORS_ALLOWED_ORIGINS` | `https://votre-domaine` (ex. `https://gopharma.ci`) | **aucun `Access-Control-Allow-Origin`** → **toutes** les requêtes du site bloquées (constaté le 24/10) |
 | `JWT_KEY` | secrète, longue | Signature de jeton invalide |
 | `AUTH_STRICT_MODE` | absente (= strict) ou `true` | `false` = contrôle d'accès désactivé |
 | `MYSQLHOST` / `MYSQLUSER` / `MYSQL_ROOT_PASSWORD` / `MYSQL_DATABASE` | base de production | API en erreur |
 
 > ⚠️ Le `.env` local ne contient **ni** `NODE_ENV` **ni** `CORS_ALLOWED_ORIGINS` : à définir explicitement côté hébergeur.
-> ⚠️ Le front appelle désormais Railway **directement** (P0-1) : sans `CORS_ALLOWED_ORIGINS`, rien ne fonctionnera.
+> ⚠️ Le front appelle Railway **directement** (P0-1) : sans `CORS_ALLOWED_ORIGINS`, rien ne fonctionnera.
 
-### P0-5 — Base de données de production : **confirmée inutilisable** ❌
+### P0-5 — Base de données de production : **fonctionnelle sur `-7708`**, contenu réel à auditer ⚠️
 
 **Constat local (référence)** : **21 pharmacies** (19 Abidjan, 1 Bouaké, 1 Yamoussoukro), 3 sans photo, 16 assurances, 3 forfaits.
 
-**Constat production (sondes du 24/10, lecture seule)** : les routes qui lisent la base **échouent toutes** —
-`500` en moins d'une seconde sur `/api/assurance`, `/api/annonces/toutes`, `/api/abonnements/forfaits`,
-`/api/abonnements/actif` ; **aucune réponse** sur `/api/pharmacie` (abandon après 120 s) et
-`/api/pharmacie/rechercher` (60 s). Le schéma importé ne correspond donc pas à celui attendu par le code
-(ou la requête `pharmacie` est bloquée). Aucune écriture n'a été tentée.
+**Constat production (sondes GET du 24/10, lecture seule, service `-7708`)** :
 
-**À vérifier côté production** : schéma importé (`assurappci.sql`), nombre de lignes, index sur `pharmacie`,
-comptes réels (aucun compte de test type `0701010101`), photos accessibles.
+| Route | Réponse | Lecture |
+|---|---|---|
+| `GET /api/pharmacie` | **200** — liste de pharmacies | annuaire public alimenté |
+| `GET /api/assurance` | **200** — liste des assurances | table présente |
+| `GET /api/abonnements/forfaits` | **200** — forfaits | table présente |
+| `GET /api/annonces/toutes` | **200** — annonces | table présente |
 
-### P0-6 — L'API de production ne répond pas (nouveau, 24/10) ❌
+La base de production **répond** : les 500 et les abandons de la v3 venaient de l'ancien service. Restent à vérifier
+manuellement (non auditables sans jeton ni écriture) : le **nombre réel** de pharmacies (le test de charge `2.16`
+attend ≥ 100 fiches), l'existence de **comptes réels** (aucun compte de test type `0701010101`), et l'accès aux
+**photos** stockées (Cloudinary).
 
-Sondes **GET uniquement**, sans jeton, sans écriture, sur `https://apiassureappci-production.up.railway.app` :
+### P0-6 — API de production : elle répond, mais **CORS fermé** (bloquant) ❌
 
-| Route | Prod | Local (référence) | Verdict |
+Sondes **GET uniquement**, sans jeton, sans écriture, sur `https://apiassureappci-production-7708.up.railway.app` :
+
+| Route | `-7708` (service actif) | Ancien service | Verdict |
 |---|---|---|---|
-| `GET /api/pharmacie` | **aucune réponse** (abandon à 120 s) | 200 — 21 fiches | ❌ annuaire public mort |
-| `GET /api/pharmacie/rechercher?q=a` | **aucune réponse** (60 s) | 200 — 21 fiches | ❌ recherche morte |
-| `GET /api/notifications` | **aucune réponse** (30 s) | 401 sans jeton | ❌ |
-| `GET /api/assurance` | **500** (HTML) | 200 — 20 lignes | ❌ |
-| `GET /api/annonces/toutes` | **500** (HTML) | 200 — 29 annonces | ❌ (corrigé par `bd0d2e5`, absent de `main`) |
-| `GET /api/abonnements/forfaits` | **500** JSON | 200 — 3 forfaits | ❌ |
-| `GET /api/abonnements/actif` | **500** JSON | 401 sans jeton | ❌ |
-| `GET /api/abonnements/utilisation/1` | **404** | 404 | ⚠️ route appelée par le front, inexistante dans l'API |
-| `GET /docs`, `GET /api-docs` | **200** | 200 | ❌ à fermer en prod (`NODE_ENV`) |
-| `OPTIONS /api/pharmacie` | **204, `Access-Control-Allow-Origin: *`** | 204, origine reflétée | ❌ CORS ouvert |
+| `GET /api/pharmacie` | **200** (~3,4 s) | aucune réponse (120 s) | ✅ |
+| `GET /api/assurance` | **200** (~2,4 s) | 500 | ✅ |
+| `GET /api/abonnements/forfaits` | **200** (~3,1 s) | 500 | ✅ |
+| `GET /api/annonces/toutes` | **200** (~2,7 s) | 500 | ✅ |
+| `GET /api/pharmacies` | **401** « Token d'authentification requis » | — | ✅ garde active |
+| `GET /docs`, `GET /api-docs` | **404** | 200 | ✅ fermés |
+| `OPTIONS /api/utilisateur/connexion` | **204**, `Allow-Methods: GET,POST,PUT,DELETE,OPTIONS`, **aucun `Access-Control-Allow-Origin`** | 204 + `ACAO: *` | ❌ **CORS fermé** |
+| Toute réponse (GET) | **aucun en-tête `Access-Control-Allow-Origin`** | `ACAO: *` | ❌ **CORS fermé** |
 
-**Conclusion** : la prod n'est pas « presque prête » — elle est **inutilisable en l'état**. Deux causes distinctes,
-à traiter dans cet ordre : (1) déployer le bon code (P0-3), (2) réparer la base de production (P0-5).
+**Conclusion** : le service actif est **sain côté code et base** (routes 200, docs fermés, garde 401). Le seul
+bloquant restant est **CORS** : sans `CORS_ALLOWED_ORIGINS`, le navigateur refuse l'appel avant même d'envoyer le
+login — c'est exactement ce que reproduit le front local (`APP_ENV='prod'`), avec l'erreur
+« blocked by CORS policy » sur `/api/utilisateur/connexion`.
+
+**Action** : ajouter `CORS_ALLOWED_ORIGINS=https://votre-domaine` (et l'URL de préproduction si besoin) dans les
+variables Railway du service `-7708`, puis redéployer. Tester ensuite le login réel depuis le domaine autorisé.
 
 ---
 
@@ -195,7 +207,7 @@ function api_base(): string
 
 | Requête | Avant | Après |
 |---|---|---|
-| `Host: gopharma.ci` | `apiBase: 'http://localhost:4000/api'` | **`apiBase: 'https://apiassureappci-production.up.railway.app/api'`** |
+| `Host: gopharma.ci` | `apiBase: 'http://localhost:4000/api'` | **`apiBase: 'https://apiassureappci-production-7708.up.railway.app/api'`** |
 | `Host: localhost` | `apiBase: 'http://localhost:4000/api'` | `apiBase: 'http://localhost:4000/api'` (inchangé) |
 
 Matrice de décision vérifiée en CLI (`php -r`) :
@@ -206,8 +218,8 @@ Matrice de décision vérifiée en CLI (`php -r`) :
 | `localhost:8080` | `http://localhost:4000/api` |
 | `127.0.0.1:8080` | `http://localhost:4000/api` |
 | `192.168.1.20:8080` (test téléphone Wi-Fi) | `http://localhost:4000/api` |
-| `gopharma.ci` (public) | `https://apiassureappci-production.up.railway.app/api` |
-| `APP_ENV = 'prod'` (même sur localhost) | `https://apiassureappci-production.up.railway.app/api` |
+| `gopharma.ci` (public) | `https://apiassureappci-production-7708.up.railway.app/api` |
+| `APP_ENV = 'prod'` (même sur localhost) | `https://apiassureappci-production-7708.up.railway.app/api` |
 
 **Filet de sécurité** : si `APP_ENV` reste `'local'` sur un hôte public (déploiement non configuré), `est_local()` renvoie **faux** → le site appelle Railway au lieu du localhost du visiteur.
 
@@ -301,14 +313,16 @@ FAIT
           (visibles + verrouillés), vérifiée en navigateur le 24/10 (0 erreur JS)
 
 RESTE À FAIRE
- [ ] 6. API — merger impl/securite-jwt-bcrypt → main, pousser
-         (vérifié le 24/10 : NON fait — branche 13 commits devant, absente de GitHub)
- [ ] 7. API — Railway : NODE_ENV=production, CORS_ALLOWED_ORIGINS=https://<domaine>,
-         JWT_KEY, identifiants MySQL de production, AUTH_STRICT_MODE absente
- [ ] 8. API — redéployer puis vérifier GET /api/pharmacie et /api/abonnements/forfaits
-         depuis le navigateur (contrôle CORS réel)
+ [ ] 6. API — pousser le merge local : `git push origin main` (main local = 464d182,
+         origin/main = 070e7f6 ; le merge est fait, seul le push manque)
+ [ ] 7. API — Railway (`-7708`) : CORS_ALLOWED_ORIGINS=https://<domaine> (bloquant),
+         NODE_ENV=production, JWT_KEY, identifiants MySQL de production,
+         AUTH_STRICT_MODE absente
+ [ ] 8. API — redéployer puis vérifier depuis le navigateur que les routes répondent
+         avec l'en-tête CORS (login réel) — le contrôle GET seul ne suffit pas
  [ ] 9. API — rejouer les tests de sécurité (90/90 attendu)
- [ ]10. Base — schéma + données réelles importés, comptes pharmacie opérationnels
+ [ ]10. Base — vérifier le contenu réel de la base de production (nombre de pharmacies,
+         comptes, photos) — les routes répondent déjà 200
  [ ]11. Front — déployer en HTTPS, vérifier accueil / annuaire / carte / connexion / dashboard
  [ ]12. Front — test sur téléphone réel (installation PWA + hors ligne)
  [ ]13. Légal — mentions légales + politique de confidentialité
@@ -321,9 +335,10 @@ RESTE À FAIRE
 
 ## 8. Recommandation
 
-**Prêt pour une bêta publique encadrée dès que P0-3 et P0-5 sont clos** :
+**Prêt pour une bêta publique encadrée dès que le CORS de `-7708` est ouvert** :
 
-- **en l'état (24/10), l'API déployée ne rend pas le service** : annuaire sans réponse, 4 routes en 500 (P0-6) ;
+- **en l'état (24/10), l'API déployée répond** (routes publiques 200, docs fermés, garde 401) mais **refuse le
+  navigateur** faute d'en-tête CORS : c'est le seul bloquant de déploiement (P0-6) ;
 - périmètre assumé : **annuaire + espace pharmacie gratuit** ;
 - trois modules payants **visibles mais verrouillés**, aucun paiement ;
 - mention « version pilote » sur l'accueil ;

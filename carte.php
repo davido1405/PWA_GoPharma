@@ -19,12 +19,12 @@ require_once __DIR__ . '/config/app.php';
 <body class="min-h-screen bg-slate-50">
   <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur">
     <div class="container-page flex min-h-[64px] flex-wrap items-center justify-between gap-x-4 gap-y-2 py-2">
-      <a href="index.php" class="flex items-center"><img src="assets/img/logo.png" alt="GoPharma" class="h-10 w-auto" /></a>
+      <a href="/" class="flex items-center"><img src="assets/img/logo.png" alt="GoPharma" class="h-10 w-auto" /></a>
       <nav class="flex flex-wrap items-center gap-2 text-sm" aria-label="Navigation publique">
-        <a href="pharmacies.php" class="btn-nav">Pharmacies</a>
+        <a href="pharmacies" class="btn-nav">Pharmacies</a>
         <button type="button" class="btn-nav" data-share-site>Partager le site</button>
-        <a href="index.php" class="btn-nav">Accueil</a>
-        <a href="connexion.php" class="btn-primary">Espace pharmacie</a>
+        <a href="/" class="btn-nav">Accueil</a>
+        <a href="connexion" class="btn-primary">Espace pharmacie</a>
       </nav>
     </div>
   </header>
@@ -35,7 +35,7 @@ require_once __DIR__ . '/config/app.php';
       <p class="mt-2 text-sm text-slate-500">Localisez les pharmacies et leurs itinéraires.</p>
       <div class="mt-3 flex flex-wrap gap-2">
         <button id="carte-geo" type="button" class="btn-primary">Me localiser</button>
-        <a class="btn-ghost" href="pharmacies.php">Liste</a>
+        <a class="btn-ghost" href="pharmacies">Liste</a>
       </div>
       <p id="carte-status" class="mt-2 text-xs text-slate-500" aria-live="polite"></p>
     </section>

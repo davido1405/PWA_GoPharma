@@ -1451,7 +1451,7 @@
     });
     if (confirme) {
       Session.clear();
-      window.location.href = 'connexion.php';
+      window.location.href = '/connexion';
     }
   }
 
@@ -1509,7 +1509,7 @@
     hydrateIcons();
 
     if (!state.session || !state.session.codeUtilisateur) {
-      window.location.replace('connexion.php');
+      window.location.replace('/connexion');
       return;
     }
 

@@ -10,7 +10,7 @@
   const togglePin = document.getElementById('toggle-pin');
 
   if (Session.get() && Session.code()) {
-    window.location.replace('dashboard.php');
+    window.location.replace('/dashboard');
     return;
   }
 
@@ -454,7 +454,7 @@
     try {
       await creerPharmacie();
       Toast.success('Votre pharmacie a été créée.');
-      window.location.href = 'dashboard.php#/profil';
+      window.location.href = '/dashboard#/profil';
     } catch (err) {
       const message =
         err instanceof ApiError ? err.message : 'La création de la pharmacie a échoué.';

@@ -89,17 +89,20 @@ function texteTechnique(txt) {
 
         // menu / liens du menu
         const liens = await page.evaluate(() => Array.from(document.querySelectorAll('a')).map((a) => a.getAttribute('href')).filter(Boolean));
-        const cheminFinal = page.url().split('#')[0].split('?')[0].split('/').pop();
+        // URLs sans extension : on compare des chemins normalisés. Les anciennes
+        // URLs en .php restent valides (le routeur sert le fichier littéral).
+        const cheminDe = (x) => (x || '').split('#')[0].split('?')[0].replace(/\.php$/, '');
+        const cheminFinal = cheminDe(page.url().split('#')[0].split('?')[0].split('/').pop());
         // Décision produit : « De garde » n'est plus une page mais un filtre de pharmacie ;
         // le bouton « Carte » n'apparaît que sur la page Pharmacies.
-        const requis = { 'pharmacies.php': 'Pharmacies', 'connexion.php': 'Espace pharmacie' };
-        if (cheminFinal === 'pharmacies.php') requis['carte.php'] = 'Carte';
+        const requis = { 'pharmacies': 'Pharmacies', 'connexion': 'Espace pharmacie' };
+        if (cheminFinal === 'pharmacies') requis['carte'] = 'Carte';
         for (const [h, libelle] of Object.entries(requis)) {
           if (h === cheminFinal) continue; // une page ne se lie pas forcément à elle-même
-          if (!liens.some((x) => x.split('#')[0].split('?')[0].endsWith(h))) navManquant.push(nom + ' → ' + libelle + ' (' + h + ')');
+          if (!liens.some((x) => cheminDe(x).endsWith(h))) navManquant.push(nom + ' → ' + libelle + ' (' + h + ')');
         }
-        for (const x of liens) if (x.split('#')[0].split('?')[0].endsWith('de-garde.php')) liensGardeSupprimee.push(nom + ' → ' + x);
-        if (cheminFinal !== 'pharmacies.php' && liens.some((x) => x.split('#')[0].split('?')[0].endsWith('carte.php'))) liensCarteAilleurs.push(nom);
+        for (const x of liens) if (cheminDe(x).endsWith('de-garde')) liensGardeSupprimee.push(nom + ' → ' + x);
+        if (cheminFinal !== 'pharmacies' && liens.some((x) => cheminDe(x).endsWith('carte'))) liensCarteAilleurs.push(nom);
 
         // manifest
         const aManifest = await page.evaluate(() => !!document.querySelector('link[rel="manifest"]'));
