@@ -259,6 +259,7 @@ Nécessaire parce que **WildFly (Eclipse) occupait `127.0.0.1:8080`** sur le pos
 | 9 | **Domaine + HTTPS** | Certificat et redirection (indispensable à la PWA) | selon hébergeur |
 | 10 | **Limiteur de débit global** (100 req / 15 min / IP) | Plusieurs visiteurs derrière un même NAT peuvent recevoir des 429 | 30 min |
 | 11 | **Qualité perçue** | Lighthouse et test sur un vrai téléphone non réalisés | 1 h |
+| 12 | **Routes appelées par le front mais absentes de l'API** | `POST /pharmacie/upload-photo` (**testé : 404** depuis le dashboard), `GET /abonnements/utilisation/:code`, `/abonnements/limites`, `/newsletters/envoyer` | 2–3 h |
 
 ---
 
@@ -288,6 +289,7 @@ FAIT
 
 RESTE À FAIRE
  [ ] 6. API — merger impl/securite-jwt-bcrypt → main, pousser
+         (vérifié le 24/10 : NON fait — branche 13 commits devant, absente de GitHub)
  [ ] 7. API — Railway : NODE_ENV=production, CORS_ALLOWED_ORIGINS=https://<domaine>,
          JWT_KEY, identifiants MySQL de production, AUTH_STRICT_MODE absente
  [ ] 8. API — redéployer puis vérifier GET /api/pharmacie et /api/abonnements/forfaits
