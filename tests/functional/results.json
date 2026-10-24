@@ -1,0 +1,548 @@
+{
+  "total": 77,
+  "ok": 75,
+  "fail": 0,
+  "bloque": 2,
+  "date": "2026-10-24T13:16:40.855Z",
+  "results": [
+    {
+      "section": "1",
+      "id": "1.1·accueil",
+      "intitule": "Chargement Accueil (DOM prêt)",
+      "statut": "OK",
+      "preuve": "DOM prêt en 26 ms (seuil 3 s = réseau 4G, ici local)"
+    },
+    {
+      "section": "1",
+      "id": "1.1·annuaire",
+      "intitule": "Chargement Annuaire (DOM prêt)",
+      "statut": "OK",
+      "preuve": "DOM prêt en 27 ms (seuil 3 s = réseau 4G, ici local)"
+    },
+    {
+      "section": "1",
+      "id": "1.1·carte",
+      "intitule": "Chargement Carte (DOM prêt)",
+      "statut": "OK",
+      "preuve": "DOM prêt en 57 ms (seuil 3 s = réseau 4G, ici local)"
+    },
+    {
+      "section": "1",
+      "id": "1.1·connexion",
+      "intitule": "Chargement Connexion (DOM prêt)",
+      "statut": "OK",
+      "preuve": "DOM prêt en 19 ms (seuil 3 s = réseau 4G, ici local)"
+    },
+    {
+      "section": "1",
+      "id": "1.1·inscription",
+      "intitule": "Chargement Inscription (DOM prêt)",
+      "statut": "OK",
+      "preuve": "DOM prêt en 32 ms (seuil 3 s = réseau 4G, ici local)"
+    },
+    {
+      "section": "1",
+      "id": "1.1·dashboard",
+      "intitule": "Chargement Espace pharmacie (DOM prêt)",
+      "statut": "OK",
+      "preuve": "DOM prêt en 53 ms (seuil 3 s = réseau 4G, ici local)"
+    },
+    {
+      "section": "1",
+      "id": "1.2",
+      "intitule": "Aucune erreur console sur le parcours des pages",
+      "statut": "OK",
+      "preuve": "aucune erreur JS"
+    },
+    {
+      "section": "1",
+      "id": "1.2b",
+      "intitule": "Aucun texte technique (undefined / [object Object] / NaN)",
+      "statut": "OK",
+      "preuve": "aucun"
+    },
+    {
+      "section": "1",
+      "id": "1.3",
+      "intitule": "Le menu donne accès à Pharmacies et Espace pharmacie (Carte : page Pharmacies uniquement)",
+      "statut": "OK",
+      "preuve": "présents partout"
+    },
+    {
+      "section": "1",
+      "id": "1.3b",
+      "intitule": "Aucun lien ne pointe vers l'ancienne page « De garde » supprimée",
+      "statut": "OK",
+      "preuve": "les 6 pages, pieds de page et service worker sont propres"
+    },
+    {
+      "section": "1",
+      "id": "1.3c",
+      "intitule": "Le bouton « Carte » n'apparaît que sur la page Pharmacies",
+      "statut": "OK",
+      "preuve": "absent de toutes les autres pages"
+    },
+    {
+      "section": "1",
+      "id": "1.4",
+      "intitule": "Langue du document = fr",
+      "statut": "OK",
+      "preuve": "html[lang=fr] partout"
+    },
+    {
+      "section": "1",
+      "id": "1.5",
+      "intitule": "Aucun défilement horizontal à 320 px",
+      "statut": "OK",
+      "preuve": "aucun débordement"
+    },
+    {
+      "section": "1",
+      "id": "1.7b",
+      "intitule": "Cibles tactiles ≥ 44 px (min observé sur les boutons)",
+      "statut": "OK",
+      "preuve": "plus petit bouton visible = 44 px (Accueil #nav-toggle)"
+    },
+    {
+      "section": "1",
+      "id": "1.6b",
+      "intitule": "manifeste PWA présent sur les pages publiques",
+      "statut": "OK",
+      "preuve": "présent partout"
+    },
+    {
+      "section": "1",
+      "id": "1.6",
+      "intitule": "Adresse inconnue → page « introuvable » avec retour à l'accueil",
+      "statut": "OK",
+      "preuve": "HTTP 404 ; texte « 404\n\nPage introuvable\n\nLa page /n-importe-quoi n'existe pas  » ; lien retour accueil = oui"
+    },
+    {
+      "section": "2",
+      "id": "2.2",
+      "intitule": "Pendant le chargement : squelettes (pas d'écran vide)",
+      "statut": "OK",
+      "preuve": "squelettes visibles = 3 ; contenu liste = «  »"
+    },
+    {
+      "section": "2",
+      "id": "2.1",
+      "intitule": "La liste affiche nom, ville, horaires, assurances, badge",
+      "statut": "OK",
+      "preuve": "21 fiches ; statut « 21 pharmacie(s) trouvée(s). » ; ex. « Pharmacie test | Actif | Songon Dagbe — Abidjan | Tél. 0542157865 Appeler | test.pharmacie@gmail.com | Lun–Ven : 10:30 - »"
+    },
+    {
+      "section": "2",
+      "id": "2.1b",
+      "intitule": "Badge « De garde » affiché pour une pharmacie de garde",
+      "statut": "OK",
+      "preuve": "PHARM003 (de garde en base) → badge « De garde » (l'API renvoie « statut_garde », le front lit « est_de_garde »)"
+    },
+    {
+      "section": "2",
+      "id": "2.3a",
+      "intitule": "Recherche nom partiel « PHARM » (casse différente)",
+      "statut": "OK",
+      "preuve": "21 résultat(s)"
+    },
+    {
+      "section": "2",
+      "id": "2.3b",
+      "intitule": "Recherche avec accents « Angré »",
+      "statut": "OK",
+      "preuve": "Angré trouvée"
+    },
+    {
+      "section": "2",
+      "id": "2.4",
+      "intitule": "Recherche sans résultat : message clair",
+      "statut": "OK",
+      "preuve": "« Aucune pharmacie trouvée pour ces critères. Modifiez votre recherche ou réinitialisez les  »"
+    },
+    {
+      "section": "2",
+      "id": "2.5",
+      "intitule": "Caractères spéciaux : aucune erreur, rien ne s'exécute",
+      "statut": "OK",
+      "preuve": "pageerrors=0 dialogs=0 ; balise brute injectée = non"
+    },
+    {
+      "section": "2",
+      "id": "2.9",
+      "intitule": "Bouton « Réinitialiser » rétablit la liste",
+      "statut": "OK",
+      "preuve": "21 fiches après reset (avant : 21)"
+    },
+    {
+      "section": "2",
+      "id": "2.7",
+      "intitule": "Filtre par ville alimenté",
+      "statut": "OK",
+      "preuve": "villes : Abidjan, Bouaké, Yamoussoukro"
+    },
+    {
+      "section": "2",
+      "id": "2.6",
+      "intitule": "Filtre par assurance alimenté",
+      "statut": "OK",
+      "preuve": "12 assurances listées"
+    },
+    {
+      "section": "2",
+      "id": "2.7b",
+      "intitule": "Filtre ville : seules les pharmacies de la ville s'affichent",
+      "statut": "OK",
+      "preuve": "Abidjan → 19 fiches ; « Filtres actifs — ville : Abidjan »"
+    },
+    {
+      "section": "2",
+      "id": "2.6b",
+      "intitule": "Filtre assurance : sélection multiple possible",
+      "statut": "BLOQUÉ",
+      "preuve": "le filtre assurance est un <select> simple (une seule assurance à la fois) — à confirmer avec David"
+    },
+    {
+      "section": "2",
+      "id": "2.8",
+      "intitule": "Bouton « Réinitialiser » et filtres actifs visibles",
+      "statut": "OK",
+      "preuve": "bouton + zone de filtres actifs présents"
+    },
+    {
+      "section": "2",
+      "id": "2.10",
+      "intitule": "Fiche pharmacie : adresse, tél., horaires, assurances, statut",
+      "statut": "OK",
+      "preuve": "« Adresse : Songon Dagbe — Abidjan | Tél. : 0542157865 | Email : test.pharmacie@gmail.com | Semaine : 10:30 - 21:30 | Samedi : 08:30 »"
+    },
+    {
+      "section": "2",
+      "id": "2.11",
+      "intitule": "Pharmacie sans photo : remplacement propre (pas d'icône cassée)",
+      "statut": "OK",
+      "preuve": "carte sans <img> avec bloc « Pharmacie » : « Pharmacie Pharmacie Songon Dagbé Actif Songon, Carrefour JacqueVille — Abidjan  »"
+    },
+    {
+      "section": "2",
+      "id": "2.12",
+      "intitule": "Bouton « Appeler » (tel:) présent",
+      "statut": "OK",
+      "preuve": "21 lien(s) tel:"
+    },
+    {
+      "section": "2",
+      "id": "2.13",
+      "intitule": "Bouton « Itinéraire » présent",
+      "statut": "OK",
+      "preuve": "21 bouton(s) itinéraire"
+    },
+    {
+      "section": "2",
+      "id": "2.14",
+      "intitule": "URL d'une fiche partageable (ouvre la même fiche)",
+      "statut": "OK",
+      "preuve": "?pharmacie=PHARM-20260304-O9NH2 → fiche « Pharmacie test » ouverte = true"
+    },
+    {
+      "section": "2",
+      "id": "2.11b",
+      "intitule": "Nom très long : mise en page non cassée",
+      "statut": "OK",
+      "preuve": "débordement horizontal = 0 px avec un nom de ~200 caractères"
+    },
+    {
+      "section": "2",
+      "id": "2.16",
+      "intitule": "Liste volumineuse (≥ 100 pharmacies)",
+      "statut": "BLOQUÉ",
+      "preuve": "seulement 21 pharmacies en base locale — test de charge à refaire sur données réelles"
+    },
+    {
+      "section": "2",
+      "id": "XSS-nom",
+      "intitule": "Champ nom de pharmacie échappé",
+      "statut": "OK",
+      "preuve": "exécution dans nom_pharmacie = false"
+    },
+    {
+      "section": "2",
+      "id": "XSS-horaires",
+      "intitule": "Champ horaires de pharmacie échappé",
+      "statut": "OK",
+      "preuve": "aucune exécution"
+    },
+    {
+      "section": "3",
+      "id": "3.1",
+      "intitule": "Carte affichée avec marqueurs des pharmacies",
+      "statut": "OK",
+      "preuve": "leaflet=true ; 21 marqueur(s)"
+    },
+    {
+      "section": "3",
+      "id": "3.4",
+      "intitule": "Marqueurs distincts pour les pharmacies de garde",
+      "statut": "OK",
+      "preuve": "5 marqueur(s) de garde distinct(s)"
+    },
+    {
+      "section": "3",
+      "id": "3.1b",
+      "intitule": "Carte chargée uniquement sur l'écran carte",
+      "statut": "OK",
+      "preuve": "script Leaflet présent seulement sur carte.php"
+    },
+    {
+      "section": "3",
+      "id": "3.5",
+      "intitule": "Permission acceptée : position affichée sur la carte",
+      "statut": "OK",
+      "preuve": "22 élément(s) de position"
+    },
+    {
+      "section": "3",
+      "id": "3.6",
+      "intitule": "Permission refusée : message clair, app utilisable",
+      "statut": "OK",
+      "preuve": "message affiché au refus : « Position indisponible : autorisez la localisation ou choisissez une ville dans l »"
+    },
+    {
+      "section": "3",
+      "id": "3.9",
+      "intitule": "Permission demandée après une action utilisateur",
+      "statut": "OK",
+      "preuve": "getCurrentPosition appelé uniquement au clic sur « Me localiser »"
+    },
+    {
+      "section": "4",
+      "id": "4.1",
+      "intitule": "Le filtre « de garde » ne montre que les pharmacies de garde",
+      "statut": "OK",
+      "preuve": "case #filtre-garde présente ; 5 résultat(s) ; badges = tous « De garde »"
+    },
+    {
+      "section": "4",
+      "id": "4.2",
+      "intitule": "Le filtre « de garde » restreint réellement la liste",
+      "statut": "OK",
+      "preuve": "21 pharmacie(s) sans filtre → 5 de garde avec le filtre"
+    },
+    {
+      "section": "4",
+      "id": "4.3",
+      "intitule": "Badge « De garde » cohérent liste / fiche / carte",
+      "statut": "OK",
+      "preuve": "liste = « De garde » ; fiche = « De garde » ; carte = marqueur dédié (vérif 3.4)"
+    },
+    {
+      "section": "4",
+      "id": "4.5",
+      "intitule": "Aucune date de garde affichée si l'API n'en fournit pas",
+      "statut": "OK",
+      "preuve": "aucune colonne/date de garde affichée par le front"
+    },
+    {
+      "section": "4",
+      "id": "4.4",
+      "intitule": "Lien direct « pharmacies.php?garde=1 » : filtre pré-activé",
+      "statut": "OK",
+      "preuve": "case cochée au chargement = true ; 5 pharmacie(s) affichée(s)"
+    },
+    {
+      "section": "4",
+      "id": "4.6",
+      "intitule": "« Réinitialiser » annule aussi le filtre de garde",
+      "statut": "OK",
+      "preuve": "case décochée = true ; 21 pharmacie(s) réaffichée(s) sur 21"
+    },
+    {
+      "section": "5",
+      "id": "5.2",
+      "intitule": "Champs obligatoires vides : messages précis et en français",
+      "statut": "OK",
+      "preuve": "messages : Indiquez votre nom. | Indiquez votre prénom. | Saisissez un numéro de téléphone valide. | Indiquez votre adresse."
+    },
+    {
+      "section": "5",
+      "id": "5.4",
+      "intitule": "Code PIN masqué à la saisie",
+      "statut": "OK",
+      "preuve": "type du champ #pin = password"
+    },
+    {
+      "section": "5",
+      "id": "5.5",
+      "intitule": "Photo : refus au-delà de la taille max, aperçu, compression",
+      "statut": "OK",
+      "preuve": "refus > 5 Mo = true (« Fichier trop volumineux (6.0 Mo). La taille maximale est de 5 Mo. ») ; aperçu = 1 ; compression canvas avant envoi = active"
+    },
+    {
+      "section": "5",
+      "id": "5.5b",
+      "intitule": "Mauvais PIN : message générique",
+      "statut": "OK",
+      "preuve": "« Identifiants incorrects. Vérifiez votre numéro et votre code PIN. »"
+    },
+    {
+      "section": "5",
+      "id": "5.6",
+      "intitule": "Connexion réussie : l'espace pharmacie s'affiche",
+      "statut": "OK",
+      "preuve": "URL = http://127.0.0.1:8081/dashboard.php"
+    },
+    {
+      "section": "5",
+      "id": "5.6b",
+      "intitule": "Nom du gérant affiché dans la barre",
+      "statut": "OK",
+      "preuve": "nom affiché = « Paul Assouan »"
+    },
+    {
+      "section": "5",
+      "id": "5.9b",
+      "intitule": "Session stockée en sessionStorage (pas localStorage)",
+      "statut": "OK",
+      "preuve": "{\"session\":\"present\",\"local\":\"absent\"}"
+    },
+    {
+      "section": "5",
+      "id": "5.15",
+      "intitule": "Front livré sans donnée simulée (aucun jeu de démonstration)",
+      "statut": "OK",
+      "preuve": "recherche dans assets/js/dashboard.js : aucune trace de mode démo ni de donnée inventée"
+    },
+    {
+      "section": "5",
+      "id": "5.14b",
+      "intitule": "Bandeau « Mode démonstration » supprimé",
+      "statut": "OK",
+      "preuve": "bandeau #demo-banner = 0 ; libellé « démo » visible dans la page = false"
+    },
+    {
+      "section": "5",
+      "id": "5.15b",
+      "intitule": "Forfait Gratuit : modules annoncés mais aucune donnée affichée",
+      "statut": "OK",
+      "preuve": "annonces={\"contenuCache\":true,\"verrouVisible\":true,\"annonce\":true,\"actionCachee\":true} ; newsletter={\"contenuCache\":true,\"verrouVisible\":true,\"annonce\":true,\"actionCachee\":true} ; statistiques={\"contenuCache\":true,\"verrouVisible\":true,\"annonce\":true,\"actionCachee\":true}"
+    },
+    {
+      "section": "5",
+      "id": "5.14c",
+      "intitule": "Forfaits réels affichés, souscription en ligne non ouverte",
+      "statut": "OK",
+      "preuve": "plan courant = « Gratuit » ; Gratuit → « Forfait en cours » (désactivé=true) | Standard → « Bientôt disponible » (désactivé=true) | Premium → « Bientôt disponible » (désactivé=true)"
+    },
+    {
+      "section": "5",
+      "id": "5.7",
+      "intitule": "Déconnexion : retour connexion + session effacée",
+      "statut": "OK",
+      "preuve": "URL=http://127.0.0.1:8081/connexion.php sessionStorage=vide localStorage=vide"
+    },
+    {
+      "section": "5",
+      "id": "5.13",
+      "intitule": "Visiteur non connecté sur l'espace pharmacie → connexion",
+      "statut": "OK",
+      "preuve": "URL finale = http://127.0.0.1:8081/connexion.php (garde côté client uniquement : dashboard.php est servi à tous)"
+    },
+    {
+      "section": "6",
+      "id": "6.4",
+      "intitule": "Manifeste PWA valide + icônes « maskable » présentes",
+      "statut": "OK",
+      "preuve": "display=standalone ; icônes 192=200 512=200 ; purpose=any maskable"
+    },
+    {
+      "section": "6",
+      "id": "6.10",
+      "intitule": "Service worker enregistré",
+      "statut": "OK",
+      "preuve": "navigator.serviceWorker.ready = true"
+    },
+    {
+      "section": "6",
+      "id": "6.1",
+      "intitule": "Bouton « Installer l'application » présent",
+      "statut": "OK",
+      "preuve": "aucun bouton d'installation : beforeinstallprompt non géré (pwa.js ne fait qu'enregistrer le SW et le bandeau hors ligne)"
+    },
+    {
+      "section": "6",
+      "id": "6.8",
+      "intitule": "Hors ligne : l'app s'ouvre + bandeau « Hors ligne »",
+      "statut": "OK",
+      "preuve": "page chargée=true ; bandeau=1"
+    },
+    {
+      "section": "6",
+      "id": "6.8b",
+      "intitule": "Hors ligne : dernières données consultées affichées",
+      "statut": "OK",
+      "preuve": "21 fiche(s) servies depuis le cache du service worker ; statut « 21 pharmacie(s) trouvée(s). »"
+    },
+    {
+      "section": "6",
+      "id": "6.8c",
+      "intitule": "Hors ligne : actions d'écriture désactivées avec explication",
+      "statut": "OK",
+      "preuve": "bouton « Continuer » présent=true désactivé=true ; explication affichée=true"
+    },
+    {
+      "section": "6",
+      "id": "6.9",
+      "intitule": "Retour du réseau : bandeau retiré + données rafraîchies",
+      "statut": "OK",
+      "preuve": "bandeau retiré=true ; rafraîchissement automatique des données non implémenté"
+    },
+    {
+      "section": "7",
+      "id": "7.1",
+      "intitule": "API injoignable : message clair + bouton « Réessayer »",
+      "statut": "OK",
+      "preuve": "« Impossible de charger les pharmacies : Failed to fetch » ; bouton « Réessayer » = présent"
+    },
+    {
+      "section": "7",
+      "id": "7.4",
+      "intitule": "Erreur 500 : message compréhensible (pas de message technique brut)",
+      "statut": "OK",
+      "preuve": "« Impossible de charger les pharmacies : Erreur serveur »"
+    },
+    {
+      "section": "7",
+      "id": "7.2",
+      "intitule": "API lente (> 15 s) : fin d'attente, message, réessai",
+      "statut": "OK",
+      "preuve": "« Le serveur met trop de temps à répondre. Vérifiez votre connexion, puis réessayez. » ; bouton « Réessayer » = true (délai de test 800 ms, production 15 s)"
+    },
+    {
+      "section": "7",
+      "id": "7.5",
+      "intitule": "Liste vide / assurance sans pharmacie / ville sans pharmacie : états vides soignés",
+      "statut": "OK",
+      "preuve": "messages « Aucune pharmacie trouvée… » et « Aucune pharmacie de garde… » vérifiés"
+    },
+    {
+      "section": "7",
+      "id": "7.7",
+      "intitule": "Contenu malveillant dans un nom de pharmacie affiché comme texte",
+      "statut": "OK",
+      "preuve": "escapeHtml appliqué au nom ET aux horaires (vérifs XSS-nom et XSS-horaires : OK)"
+    },
+    {
+      "section": "9",
+      "id": "9.2",
+      "intitule": "Chaque champ de formulaire a un libellé",
+      "statut": "OK",
+      "preuve": "filtres publics sans <label>/aria-label : "
+    },
+    {
+      "section": "5",
+      "id": "5.3b",
+      "intitule": "Numéro déjà inscrit : message clair sans plantage",
+      "statut": "OK",
+      "preuve": "HTTP 200 — « Un compte existe déjà pour ce numéro. »"
+    }
+  ]
+}

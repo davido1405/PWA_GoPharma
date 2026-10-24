@@ -1,0 +1,34 @@
+# GoPharma — règles Apache (WAMP / XAMPP / hébergement mutualisé)
+# Permet de déposer le dossier directement dans www/ sans modification.
+
+Options -Indexes
+
+RewriteEngine On
+
+# Pas de relais PHP : le front appelle directement l'API Node (config/app.php).
+# (L'ancienne règle « ^api(/.*)?$ api/index.php » pointait vers un dossier absent.)
+
+# Fichiers et dossiers réels : servis tels quels
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Accès sans extension : /connexion → connexion.php
+RewriteRule ^connexion/?$ connexion.php [L]
+RewriteRule ^inscription/?$ inscription.php [L]
+RewriteRule ^dashboard/?$ dashboard.php [L]
+
+# Pages PHP
+RewriteRule ^$ index.php [L]
+RewriteCond $1 !\.php$
+RewriteRule ^(.+)\.php$ $1.php [L]
+RewriteRule ^([^/]+)/?$ $1.php [L]
+
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  # Le service worker doit être revalidé : sinon le navigateur peut garder
+  # l'ancienne version en cache HTTP et ne jamais détecter la mise à jour.
+  <FilesMatch "^sw\.js$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>

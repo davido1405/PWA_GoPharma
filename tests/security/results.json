@@ -1,0 +1,639 @@
+{
+  "hoteBase": "localhost:3306 / assurappci",
+  "total": 90,
+  "okCount": 90,
+  "failCount": 0,
+  "blockedCount": 0,
+  "results": [
+    {
+      "name": "Insertion SQL données de test",
+      "status": "OK",
+      "preuve": "Pharmacie A=PHARM_SEC_A, Pharmacie B=PHARM_SEC_B, Gérants A=USER_SEC_A, B=USER_SEC_B",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Connexion A (jeton)",
+      "status": "OK",
+      "preuve": "jeton récupéré",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Connexion B (jeton)",
+      "status": "OK",
+      "preuve": "jeton récupéré",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Connexion upload (gérant dédié)",
+      "status": "OK",
+      "preuve": "jeton récupéré (USER_UP_mvmh24e6zrt6)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Route publique POST /api/utilisateur/inscription",
+      "status": "OK",
+      "preuve": "HTTP 200 — {\"success\":false,\"message\":\"Type utilisateur non défini\"}",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Route publique POST /api/utilisateur/connexion",
+      "status": "OK",
+      "preuve": "HTTP 200 — {\"success\":false,\"message\":\"Veuillez vérifier tous les champs. Merci\"}",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Route publique POST /api/utilisateur/recoverPassword",
+      "status": "OK",
+      "preuve": "HTTP 501 — {\"success\":false,\"message\":\"Récupération du code PIN non disponible pour le moment\"}",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Route publique GET /api/pharmacie/rechercher",
+      "status": "OK",
+      "preuve": "HTTP 200 — {\"success\":true,\"message\":\"Liste des pharmacies triée selon votre position\",\"data\":[{\"code_pharmacie\":\"PHARM-20260304-O9NH2\",\"nom_pharmacie\":\"Pharmacie test\",\"p",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Route publique GET /api/pharmacie",
+      "status": "OK",
+      "preuve": "HTTP 200 — {\"success\":true,\"message\":\"Liste des pharmacies\",\"data\":[{\"code_pharmacie\":\"PHARM-20260304-O9NH2\",\"nom_pharmacie\":\"Pharmacie test\",\"photo_pharmacie\":\"https://re",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Route publique GET /api/assurance",
+      "status": "OK",
+      "preuve": "HTTP 200 — {\"success\":true,\"message\":\"Liste des assurances du système\",\"data\":[{\"id_assurance\":1,\"nom_assurance\":\"NSIA Assurances\",\"id_statut\":1},{\"id_assurance\":2,\"nom_as",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Route publique GET /api/abonnements/forfaits",
+      "status": "OK",
+      "preuve": "HTTP 200 — {\"success\":true,\"data\":[{\"id_forfait\":1,\"nom_forfait\":\"Gratuit\",\"prix\":\"0.00\",\"duree_jours\":365,\"description\":\"Forfait de base gratuit\",\"fonctionnalites\":[{\"nom",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Route publique GET /api/annonces/toutes",
+      "status": "OK",
+      "preuve": "HTTP 200 — {\"success\":true,\"total_annonces\":29,\"data\":[{\"id_annonce\":43,\"titre\":\"Annonce test\",\"contenu\":\"Contenu test\",\"date_publication\":\"2026-10-18 04:16:07\",\"nombre_vu",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "PUT modifierpharmacie — sans jeton",
+      "status": "OK",
+      "preuve": "HTTP 401 — {\"success\":false,\"message\":\"Token d'authentification requis\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "PUT modifierpharmacie — jeton invalide",
+      "status": "OK",
+      "preuve": "HTTP 403 — {\"success\":false,\"message\":\"Token invalide ou expiré\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "PUT modifierpharmacie — jeton B sur pharmacie A",
+      "status": "OK",
+      "preuve": "HTTP 403 — {\"success\":false,\"message\":\"Accès non autorisé à cette ressource\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "PUT modifierstatutgarde — sans jeton",
+      "status": "OK",
+      "preuve": "HTTP 401 — {\"success\":false,\"message\":\"Token d'authentification requis\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "PUT modifierstatutgarde — jeton B sur pharmacie A",
+      "status": "OK",
+      "preuve": "HTTP 403 — {\"success\":false,\"message\":\"Accès non autorisé à cette ressource\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "POST ajouterassurance — sans jeton",
+      "status": "OK",
+      "preuve": "HTTP 401 — {\"success\":false,\"message\":\"Token d'authentification requis\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "POST ajouterassurance — jeton B sur pharmacie A",
+      "status": "OK",
+      "preuve": "HTTP 403 — {\"success\":false,\"message\":\"Accès non autorisé à cette ressource\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "POST profilpharmacie — sans jeton",
+      "status": "OK",
+      "preuve": "HTTP 401 — {\"success\":false,\"message\":\"Token d'authentification requis\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "POST profilpharmacie — jeton B sur A",
+      "status": "OK",
+      "preuve": "HTTP 403 — {\"success\":false,\"message\":\"Accès non autorisé à cette ressource\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "POST profilutilisateur — sans jeton",
+      "status": "OK",
+      "preuve": "HTTP 401 — {\"success\":false,\"message\":\"Token d'authentification requis\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "POST profilutilisateur — jeton B sur A",
+      "status": "OK",
+      "preuve": "HTTP 403 — {\"success\":false,\"message\":\"Accès non autorisé à cette ressource\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "PUT envoyerFCMT — sans jeton",
+      "status": "OK",
+      "preuve": "HTTP 401 — {\"success\":false,\"message\":\"Token d'authentification requis\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "PUT envoyerFCMT — jeton B sur A",
+      "status": "OK",
+      "preuve": "HTTP 403 — {\"success\":false,\"message\":\"Accès non autorisé à cette ressource\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "PUT enovyerLocalisation — sans jeton",
+      "status": "OK",
+      "preuve": "HTTP 401 — {\"success\":false,\"message\":\"Token d'authentification requis\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "POST annonces/envoyer — sans jeton",
+      "status": "OK",
+      "preuve": "HTTP 401 — {\"success\":false,\"message\":\"Token d'authentification requis\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "POST annonces/envoyer — jeton B sur A",
+      "status": "OK",
+      "preuve": "HTTP 403 — {\"success\":false,\"message\":\"Accès non autorisé à cette ressource\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "DELETE annonces/:id — sans jeton",
+      "status": "OK",
+      "preuve": "HTTP 401 — {\"success\":false,\"message\":\"Token d'authentification requis\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "DELETE annonces/:id — jeton B sur A",
+      "status": "OK",
+      "preuve": "HTTP 403 — {\"success\":false,\"message\":\"Accès non autorisé à cette ressource\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "POST newsLetters/sabonner — sans jeton",
+      "status": "OK",
+      "preuve": "HTTP 401 — {\"success\":false,\"message\":\"Token d'authentification requis\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "POST newsLetters/sabonner — jeton B sur A",
+      "status": "OK",
+      "preuve": "HTTP 403 — {\"success\":false,\"message\":\"Accès non autorisé à cette ressource\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "POST newsLetters/abonnement — sans jeton",
+      "status": "OK",
+      "preuve": "HTTP 401 — {\"success\":false,\"message\":\"Token d'authentification requis\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "DELETE newsLetters/supprimerabonnement — sans jeton",
+      "status": "OK",
+      "preuve": "HTTP 401 — {\"success\":false,\"message\":\"Token d'authentification requis\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "POST abonnements/souscrire — sans jeton",
+      "status": "OK",
+      "preuve": "HTTP 401 — {\"success\":false,\"message\":\"Token d'authentification requis\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "GET abonnements/actif — sans jeton",
+      "status": "OK",
+      "preuve": "HTTP 401 — {\"success\":false,\"message\":\"Token d'authentification requis\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "GET abonnements/historique — sans jeton",
+      "status": "OK",
+      "preuve": "HTTP 401 — {\"success\":false,\"message\":\"Token d'authentification requis\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "GET pharmacie/statistiques/avancees — sans jeton",
+      "status": "OK",
+      "preuve": "HTTP 401 — {\"success\":false,\"message\":\"Token d'authentification requis\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "POST assurance/ajouterassurance — sans jeton",
+      "status": "OK",
+      "preuve": "HTTP 401 — {\"success\":false,\"message\":\"Token d'authentification requis\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "PUT assurance/modifierassurance — sans jeton",
+      "status": "OK",
+      "preuve": "HTTP 401 — {\"success\":false,\"message\":\"Token d'authentification requis\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "PUT assurance/activerassurance — sans jeton",
+      "status": "OK",
+      "preuve": "HTTP 401 — {\"success\":false,\"message\":\"Token d'authentification requis\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "PUT assurance/desactiverassurance — sans jeton",
+      "status": "OK",
+      "preuve": "HTTP 401 — {\"success\":false,\"message\":\"Token d'authentification requis\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "GET annonces/pharmacie — sans jeton",
+      "status": "OK",
+      "preuve": "HTTP 401 — {\"success\":false,\"message\":\"Token d'authentification requis\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "GET notifications — sans jeton",
+      "status": "OK",
+      "preuve": "HTTP 401 — {\"success\":false,\"message\":\"Token d'authentification requis\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "PUT notifications/lireNotifications — sans jeton",
+      "status": "OK",
+      "preuve": "HTTP 401 — {\"success\":false,\"message\":\"Token d'authentification requis\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "DELETE notifications/supprimerNotification — sans jeton",
+      "status": "OK",
+      "preuve": "HTTP 401 — {\"success\":false,\"message\":\"Token d'authentification requis\"} (accès refusé — attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Inscription type_utilisateur=Administrateur",
+      "status": "OK",
+      "preuve": "HTTP 200 accès autorisé (attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Mass assignment inscription",
+      "status": "OK",
+      "preuve": "HTTP 200 accès autorisé (attendu)",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Injection Node terme_saisi (' OR '1'='1…",
+      "status": "OK",
+      "preuve": "HTTP 200 sans trace",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Injection Node terme_saisi (\" OR \"1\"=\"1…",
+      "status": "OK",
+      "preuve": "HTTP 200 sans trace",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Injection Node terme_saisi ('; DROP TABLE util…",
+      "status": "OK",
+      "preuve": "HTTP 200 sans trace",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Injection Node terme_saisi (' UNION SELECT nul…",
+      "status": "OK",
+      "preuve": "HTTP 200 sans trace",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Injection Node terme_saisi (admin'--…",
+      "status": "OK",
+      "preuve": "HTTP 200 sans trace",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Injection Node terme_saisi (' OR 1=1 --…",
+      "status": "OK",
+      "preuve": "HTTP 200 sans trace",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Injection Node terme_saisi ('; UPDATE utilisat…",
+      "status": "OK",
+      "preuve": "HTTP 200 sans trace",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Injection Node terme_saisi (\\\\…",
+      "status": "OK",
+      "preuve": "HTTP 200 sans trace",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Injection Node terme_saisi (%…",
+      "status": "OK",
+      "preuve": "HTTP 200 sans trace",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Injection Node terme_saisi (1' OR '1'='1' #…",
+      "status": "OK",
+      "preuve": "HTTP 200 sans trace",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Injection Node SLEEP(3)",
+      "status": "OK",
+      "preuve": "réponse en 142 ms sans trace",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Injection Node limits=-1",
+      "status": "OK",
+      "preuve": "HTTP 200 sans trace",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Injection Node limits=999999999999",
+      "status": "OK",
+      "preuve": "HTTP 200 sans trace",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Injection Node limits=1.5",
+      "status": "OK",
+      "preuve": "HTTP 200 sans trace",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Injection Node limits=abc",
+      "status": "OK",
+      "preuve": "HTTP 200 sans trace",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Injection Node limits=' OR 1=1 --",
+      "status": "OK",
+      "preuve": "HTTP 200 sans trace",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Injection Node limits=0; DROP TABLE pharmacie --",
+      "status": "OK",
+      "preuve": "HTTP 200 sans trace",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Injection Node connexion=' OR '1'='1…",
+      "status": "OK",
+      "preuve": "HTTP 200 sans trace, sans jeton",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Injection Node connexion=\" OR \"1\"=\"1…",
+      "status": "OK",
+      "preuve": "HTTP 200 sans trace, sans jeton",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Injection Node connexion='; DROP TABLE util…",
+      "status": "OK",
+      "preuve": "HTTP 200 sans trace, sans jeton",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Injection Node connexion=' UNION SELECT nul…",
+      "status": "OK",
+      "preuve": "HTTP 200 sans trace, sans jeton",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Injection Node connexion=admin'--…",
+      "status": "OK",
+      "preuve": "HTTP 200 sans trace, sans jeton",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Injection Node connexion=' OR 1=1 --…",
+      "status": "OK",
+      "preuve": "HTTP 200 sans trace, sans jeton",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Injection Node connexion='; UPDATE utilisat…",
+      "status": "OK",
+      "preuve": "HTTP 200 sans trace, sans jeton",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Injection Node connexion=\\\\…",
+      "status": "OK",
+      "preuve": "HTTP 429 sans trace, sans jeton",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Injection Node connexion=%…",
+      "status": "OK",
+      "preuve": "HTTP 429 sans trace, sans jeton",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Injection Node connexion=1' OR '1'='1' #…",
+      "status": "OK",
+      "preuve": "HTTP 429 sans trace, sans jeton",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Injection SQL post-DROP/UPDATE — tables intactes",
+      "status": "OK",
+      "preuve": "toutes présentes",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Injection SQL post-DROP/UPDATE — comptes de lignes inchangés",
+      "status": "OK",
+      "preuve": "comptes stables",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Upload pharmacie — sans jeton",
+      "status": "OK",
+      "preuve": "HTTP 401 — {\"success\":false,\"message\":\"Token d'authentification requis\"}",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Upload fichier non-image (.txt) rejeté",
+      "status": "OK",
+      "preuve": "HTTP 400 — {\"success\":false,\"message\":\"Seulement les images sont autorisées (jpeg, jpg, png, gif, webp)\"}",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Upload faux .jpg (contenu non-image) rejeté",
+      "status": "OK",
+      "preuve": "HTTP 400 — {\"success\":false,\"message\":\"Le fichier envoyé n'est pas une image valide (contenu non reconnu)\"}",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Upload fichier vide rejeté",
+      "status": "OK",
+      "preuve": "HTTP 400 — {\"success\":false,\"message\":\"Le fichier envoyé n'est pas une image valide (contenu non reconnu)\"}",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Upload témoin (image valide -> 201)",
+      "status": "OK",
+      "preuve": "HTTP 201 — {\"success\":true,\"message\":\"Votre pharmacie a été enregistrée avec succès !\",\"data\":{\"code_pharmacie\":\"PHARM-20261024-5FMCB\",\"nom_pharmacie\":\"Pharmacie Upload mvmh24e6zrt6\",\"photo_url\":\"https://mock.cloudinary.local/pharm",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "PIN stocké en clair ?",
+      "status": "OK",
+      "preuve": "valeur=\"$2b$10$tpGMoUzpJS9D3Gihz3XZa.au7T8jAzx9i…\" bcrypt=oui",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Brute force — rate-limit réagit",
+      "status": "OK",
+      "preuve": "20 blocage(s) sur 30 essais",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "Inscription invalide — pas de stack trace (Node)",
+      "status": "OK",
+      "preuve": "HTTP 200 réponse propre",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "XSS Playwright Liste pharmacies",
+      "status": "OK",
+      "preuve": "dialogue=false baliseNonEchappee=false",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "XSS Playwright Carte",
+      "status": "OK",
+      "preuve": "dialogue=false baliseNonEchappee=false",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "XSS Playwright Dashboard",
+      "status": "OK",
+      "preuve": "dialogue=false baliseNonEchappee=false",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "XSS Playwright Inscription",
+      "status": "OK",
+      "preuve": "dialogue=false baliseNonEchappee=false",
+      "gravite": "Faible",
+      "detail": ""
+    },
+    {
+      "name": "XSS Playwright Connexion",
+      "status": "OK",
+      "preuve": "dialogue=false baliseNonEchappee=false",
+      "gravite": "Faible",
+      "detail": ""
+    }
+  ]
+}

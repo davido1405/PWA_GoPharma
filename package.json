@@ -1,0 +1,22 @@
+{
+  "name": "gopharma-espace-pharmacie",
+  "version": "2.0.0",
+  "private": true,
+  "description": "GoPharma - espace pharmacie en PHP (MySQL locale ou API distante), HTML, Tailwind CSS et JavaScript",
+  "scripts": {
+    "build": "tailwindcss -i ./assets/css/src.css -o ./assets/css/app.css --minify",
+    "watch": "tailwindcss -i ./assets/css/src.css -o ./assets/css/app.css --watch",
+    "start": "php -S localhost:8080 router.php",
+    "start:8081": "php -S 127.0.0.1:8081 router.php",
+    "db:maj": "php scripts/maj-base.php",
+    "check": "node scripts/check-ids.js && node scripts/check-links.js",
+    "test": "node scripts/check-ids.js && node scripts/check-links.js && node scripts/smoke-landing.js && node scripts/smoke-connexion.js && node scripts/smoke-inscription.js && node scripts/smoke-creation.js && node scripts/smoke-dashboard.js",
+    "test:api": "php scripts/api-smoke.php"
+  },
+  "devDependencies": {
+    "jsdom": "^29.1.1",
+    "mysql2": "^3.24.6",
+    "playwright": "^1.64.1",
+    "tailwindcss": "^3.4.17"
+  }
+}
