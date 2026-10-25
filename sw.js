@@ -3,8 +3,11 @@
    changement de ce nom, un navigateur déjà équipé continue d'afficher
    l'ancienne version, même après un redéploiement.
    v4 : suppression du mode démonstration du tableau de bord.
-   v5 : bascule local/production de api_base() (config/app.php). */
-const CACHE_NAME = 'gopharma-v5';
+   v5 : bascule local/production de api_base() (config/app.php).
+   v6 : correctif dashboard — code pharmacie (et non code utilisateur) pour
+        l'abonnement et la vérification d'accès.
+   v7 : renouvellement silencieux du jeton (refresh token) dans api.js. */
+const CACHE_NAME = 'gopharma-v7';
 const DATA_CACHE = 'gopharma-data-v1';
 const ASSETS = [
   '/',

@@ -35,6 +35,12 @@
     succesBox.classList.remove('hidden');
   }
 
+  // Retour depuis une session expirée (jeton d'accès + refresh impossibles).
+  if (parametres.get('expire') === '1') {
+    errorBox.textContent = 'Votre session a expiré. Reconnectez-vous pour continuer.';
+    errorBox.classList.remove('hidden');
+  }
+
   togglePin.addEventListener('click', () => {
     const hidden = pinInput.type === 'password';
     pinInput.type = hidden ? 'text' : 'password';
@@ -104,6 +110,7 @@
 
       Session.save({
         jwt: data.jwt_tokens || '',
+        refreshToken: data.refresh_token || '',
         codeUtilisateur: data.code_utilisateur,
         nomUtilisateur: data.nom_utilisateur || '',
         prenomUtilisateur: data.prenom_utilisateur || '',

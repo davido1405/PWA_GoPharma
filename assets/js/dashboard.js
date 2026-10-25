@@ -153,9 +153,17 @@
   }
 
   async function verifierAcces(feature, codeFonctionnalite) {
+    // Le contrôle d'accès porte sur la pharmacie, pas sur l'utilisateur :
+    // code_pharmacie (PHARM…) et code_utilisateur (GERANT…) sont distincts.
+    if (!state.pharmacie && !state.profilEnErreur) await chargerProfil();
+    const codePharmacie = state.pharmacie && state.pharmacie.code_pharmacie;
+    if (!codePharmacie) {
+      state.acces[feature] = false;
+      return false;
+    }
     try {
       const reponse = await Api.post(Endpoints.verifierAcces, {
-        code_pharmacie: code(),
+        code_pharmacie: codePharmacie,
         code_fonctionnalite: codeFonctionnalite,
       });
 
@@ -247,8 +255,15 @@
   }
 
   async function chargerAbonnement() {
+    // L'abonnement est rattaché à la pharmacie (code_pharmacie), pas au gérant.
+    if (!state.pharmacie && !state.profilEnErreur) await chargerProfil();
+    const codePharmacie = state.pharmacie && state.pharmacie.code_pharmacie;
+    if (!codePharmacie) {
+      state.abonnement = null;
+      return;
+    }
     try {
-      const reponse = await Api.get(Endpoints.abonnementActif, { code_pharmacie: code() });
+      const reponse = await Api.get(Endpoints.abonnementActif, { code_pharmacie: codePharmacie });
       const data = payloadData(reponse);
       state.abonnement = data && data.id_abonnement ? data : null;
     } catch (err) {
@@ -320,13 +335,14 @@
   async function chargerTout() {
     await Promise.all([
       chargerProfil(),
-      chargerAbonnement(),
       chargerForfaits(),
       chargerAnnonces(),
       chargerAbonnes(),
       chargerAssurances(),
       chargerHistorique(),
     ]);
+    // L'abonnement dépend du code pharmacie : on le charge après le profil.
+    await chargerAbonnement();
     await chargerUtilisation();
     renderGlobal();
     renderAccueil();

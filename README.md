@@ -90,7 +90,8 @@ Voir `RAPPORT_ETAT_PROJET.md` (verdict, bloquants, checklist ordonnée). Il rest
 côté hébergement :
 
 1. merger la branche API `impl/securite-jwt-bcrypt` dans `main` et définir
-   `NODE_ENV=production`, `CORS_ALLOWED_ORIGINS=https://<domaine>`, `JWT_KEY` et
+   `NODE_ENV=production`, `CORS_ALLOWED_ORIGINS=https://<domaine>`, `JWT_KEY`,
+   `JWT_REFRESH_KEY` (recommandé, sinon repli sur `JWT_KEY`) et
    les identifiants MySQL côté Railway ;
 2. importer le schéma et les données réelles dans la base de production ;
 3. déployer le dossier en HTTPS, vérifier le parcours complet depuis le domaine ;
@@ -116,7 +117,7 @@ Les pages et les assets sont servis **cache d'abord** par le service worker
 (`sw.js`). Après **toute** modification d'une page, d'un script ou d'une feuille
 de style :
 
-1. **incrémenter `CACHE_NAME`** dans `sw.js` (`gopharma-v5` → `gopharma-v6`…) ;
+1. **incrémenter `CACHE_NAME`** dans `sw.js` (`gopharma-v7` → `gopharma-v8`…) ;
 2. recharger l'application : le navigateur détecte le nouveau service worker et
    propose « Nouvelle version disponible. Recharger ? ».
 

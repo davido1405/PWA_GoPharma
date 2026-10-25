@@ -27,7 +27,7 @@ re-sondée sur le **bon service** (`-7708`, celui de `config/app.php`) : le code
 | Domaine | État | Verdict |
 |---|---|---|
 | Front (pages, navigation, responsive) | 0 erreur JS | ✅ OK |
-| PWA (manifeste, hors ligne, mise à jour) | `gopharma-v5`, invite vérifiée | ✅ OK |
+| PWA (manifeste, hors ligne, mise à jour) | `gopharma-v7`, invite vérifiée | ✅ OK |
 | Données affichées (plus de fictif) | Mode démo supprimé, modules verrouillés | ✅ OK |
 | Sécurité applicative (code de la branche) | 90/90 | ✅ OK |
 | **Configuration de production du front** | `api_base()` bascule local ⇄ Railway | ✅ **corrigé** |
@@ -54,7 +54,7 @@ re-sondée sur le **bon service** (`-7708`, celui de `config/app.php`) : le code
 | 6 | **Aucune donnée fictive** | `DEMO_MODE` absent ; `demo-banner` absent ; écrans verrouillés vérifiés par le harnais |
 | 7 | **Modules Annonces / Newsletter / Statistiques** | Visibles au menu, écran « bientôt disponible », accès refusé par l'API (`acces: false` pour Gratuit) |
 | 8 | **Abonnement** | Plan réel (`Gratuit`, 0 FCFA), 3 forfaits affichés, boutons désactivés, aucun paiement simulé |
-| 9 | **PWA** | `caches.keys()` = `['gopharma-v5']` ; `dashboard.js` en cache sans `DEMO_MODE` ; invite « Nouvelle version disponible » vérifiée |
+| 9 | **PWA** | `caches.keys()` = `['gopharma-v7']` ; `dashboard.js` en cache sans `DEMO_MODE` ; invite « Nouvelle version disponible » vérifiée |
 | 10 | **Mobile** | 390 px : `overflow = 0` ; 320 px : pas de débordement |
 | 11 | **Aucun secret dans le dossier web** | Pas de `.env`, pas de clé, `BDD_PASS = ''` (poste local) |
 | 12 | **Photo manquante** | `PHARM001` : photo 404 → repli sur l'icône |
@@ -264,7 +264,7 @@ Nécessaire parce que **WildFly (Eclipse) occupait `127.0.0.1:8080`** sur le pos
 | Harnais fonctionnel | **77 vérifs / 75 OK / 0 FAIL / 2 BLOQUÉ** |
 | `npm test` | exit 0 — 12/12, 12/12, 19/19, 20/20, 32/32 |
 | `npm run check` | « Tous les liens locaux existent » |
-| Cache PWA | `['gopharma-v5']`, `dashboard.js` sans `DEMO_MODE`, page sans `demo-banner` |
+| Cache PWA | `['gopharma-v7']`, `dashboard.js` sans `DEMO_MODE`, page sans `demo-banner` |
 | `php -l` | aucune erreur de syntaxe (`config/app.php`, `router.php`) |
 
 ---
@@ -354,7 +354,7 @@ RESTE À FAIRE
 |---|---|
 | Pages | `index.php`, `pharmacies.php`, `carte.php`, `connexion.php`, `inscription.php`, `dashboard.php` |
 | Assets | `assets/css/app.css` (Tailwind compilé), 12 scripts JS, icônes PWA |
-| PWA | `manifest.webmanifest`, `sw.js` (`gopharma-v5`), 2 icônes maskable |
+| PWA | `manifest.webmanifest`, `sw.js` (`gopharma-v7`), 2 icônes maskable |
 | Backend web | `config/app.php`, `router.php` (dev), `.htaccess` (Apache) |
 | Dossier `api/` | **absent** (assumé : API Node externe) |
 | `.env` dans le dossier web | **absent** (aucun secret) |

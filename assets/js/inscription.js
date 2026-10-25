@@ -322,6 +322,7 @@
   function enregistrerSession(data) {
     Session.save({
       jwt: data.jwt_tokens || '',
+      refreshToken: data.refresh_token || '',
       codeUtilisateur: data.code_utilisateur,
       nomUtilisateur: data.nom_utilisateur || '',
       prenomUtilisateur: data.prenom_utilisateur || '',
