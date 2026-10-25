@@ -90,15 +90,10 @@ const fixtures = {
     { id_newsletter: 1, code_utilisateur: 'USER-001', date_abonnement: '2026-09-01 12:00:00', statut_abonnement: 'Actif' },
     { id_newsletter: 2, code_utilisateur: 'USER-002', date_abonnement: '2026-09-12 09:15:00', statut_abonnement: 'Désactivé' },
   ],
-  '/api/abonnements/historique/GERANT001': [
+  '/api/abonnements/historique/PHARM-20260304-O9NH2': [
     { id_abonnement: 3, nom_forfait: 'Standard', prix: 15000, date_debut: '2026-09-10', date_fin: '2026-10-10', libelle_statut: 'Actif' },
   ],
   '/api/abonnements/verifier-acces': { acces: true, limite: 5, utilise: 2, restant: 3 },
-  '/api/abonnements/utilisation': [
-    { nom_fonctionnalite: 'Annonces', nb_utilisations: 2, limite: 5 },
-    { nom_fonctionnalite: 'Newsletter', nb_utilisations: 1, limite: 10 },
-    { nom_fonctionnalite: 'Statistiques de base', nb_utilisations: 3, limite: null },
-  ],
 };
 
 function reponse(data) {
@@ -233,7 +228,11 @@ function attendre(condition, timeout = 20000) {
     verifier('Anneau des types', $('#chart-types').innerHTML.includes('<svg'));
     verifier('Courbe des abonnements', $('#chart-abonnes').innerHTML.includes('<path'));
     verifier('Rythme de publication', $('#chart-publications').innerHTML.includes('rounded-t-md'));
-    verifier('Quotas du forfait', nb('#stats-quotas .rounded-xl') === 3, String(nb('#stats-quotas .rounded-xl')));
+    verifier(
+      'Quotas : état vide (route API absente)',
+      nb('#stats-quotas .rounded-xl') === 0 && $('#stats-quotas').textContent.includes('Aucune donnée de consommation'),
+      $('#stats-quotas').textContent.trim().slice(0, 60)
+    );
     verifier('Graphiques débloqués', !$('#stats-graphiques').classList.contains('hidden'));
     verifier('Carte Premium masquée', $('#stats-verrouille').classList.contains('hidden'));
   } catch (e) {

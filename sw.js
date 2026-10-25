@@ -6,8 +6,11 @@
    v5 : bascule local/production de api_base() (config/app.php).
    v6 : correctif dashboard — code pharmacie (et non code utilisateur) pour
         l'abonnement et la vérification d'accès.
-   v7 : renouvellement silencieux du jeton (refresh token) dans api.js. */
-const CACHE_NAME = 'gopharma-v7';
+   v7 : renouvellement silencieux du jeton (refresh token) dans api.js.
+   v8 : correctifs tableau de bord — historique sur le code pharmacie, profil
+        « aucune pharmacie » non confondu avec un profil chargé, plus d'appel
+        à la route inexistante /abonnements/utilisation. */
+const CACHE_NAME = 'gopharma-v8';
 const DATA_CACHE = 'gopharma-data-v1';
 const ASSETS = [
   '/',

@@ -530,8 +530,8 @@ function texteTechnique(txt) {
 
       await page2.fill('#pin', 'gerant123');
       await page2.click('#connexion-form button[type="submit"], #btn-connexion, button[type="submit"]');
-      await page2.waitForURL(/dashboard\.php/, { timeout: 10000 }).catch(() => {});
-      const surDashboard = /dashboard\.php/.test(page2.url());
+      await page2.waitForURL(/\/dashboard(\.php)?(\?|#|$)/, { timeout: 10000 }).catch(() => {});
+      const surDashboard = /\/dashboard(\.php)?(\?|#|$)/.test(page2.url());
       rec('5', '5.6', 'Connexion réussie : l\'espace pharmacie s\'affiche', surDashboard ? 'OK' : 'FAIL', 'URL = ' + page2.url());
       const nomGerant = (await page2.locator('#user-name').innerText().catch(() => '')).trim();
       rec('5', '5.6b', 'Nom du gérant affiché dans la barre', nomGerant.length > 1 ? 'OK' : 'FAIL', 'nom affiché = « ' + nomGerant + ' »');
@@ -616,13 +616,13 @@ function texteTechnique(txt) {
       await page2.evaluate(() => { const b = document.getElementById('logout-btn') || document.getElementById('topbar-logout'); if (b) b.click(); });
       const confirmVisible = await page2.waitForSelector('[data-confirm]', { timeout: 4000 }).then(() => true).catch(() => false);
       if (confirmVisible) await page2.click('[data-confirm]');
-      await page2.waitForURL(/connexion\.php/, { timeout: 8000 }).catch(() => {});
+      await page2.waitForURL(/\/connexion(\.php)?(\?|#|$)/, { timeout: 8000 }).catch(() => {});
       const stock2 = await page2.evaluate(() => ({
         s: sessionStorage.getItem('gopharma.pharmacie.session'),
         l: localStorage.getItem('gopharma.pharmacie.session'),
       }));
       rec('5', '5.7', 'Déconnexion : retour connexion + session effacée',
-        /connexion\.php/.test(page2.url()) && !stock2.s && !stock2.l ? 'OK' : 'FAIL',
+        /\/connexion(\.php)?(\?|#|$)/.test(page2.url()) && !stock2.s && !stock2.l ? 'OK' : 'FAIL',
         'URL=' + page2.url() + ' sessionStorage=' + (stock2.s ? 'restant' : 'vide') + ' localStorage=' + (stock2.l ? 'restant' : 'vide'));
       await ctx2.close();
 
@@ -630,9 +630,9 @@ function texteTechnique(txt) {
       const ctx3 = await browser.newContext({ viewport: { width: 390, height: 844 } });
       const page3 = await ctx3.newPage();
       await page3.goto(BASE + '/dashboard.php', { waitUntil: 'domcontentloaded' });
-      await page3.waitForURL(/connexion\.php/, { timeout: 6000 }).catch(() => {});
+      await page3.waitForURL(/\/connexion(\.php)?(\?|#|$)/, { timeout: 6000 }).catch(() => {});
       rec('5', '5.13', 'Visiteur non connecté sur l\'espace pharmacie → connexion',
-        /connexion\.php/.test(page3.url()) ? 'OK' : 'FAIL',
+        /\/connexion(\.php)?(\?|#|$)/.test(page3.url()) ? 'OK' : 'FAIL',
         'URL finale = ' + page3.url() + ' (garde côté client uniquement : dashboard.php est servi à tous)');
       await ctx3.close();
     }

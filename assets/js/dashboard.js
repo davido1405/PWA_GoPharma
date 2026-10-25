@@ -44,6 +44,7 @@
   const state = {
     session: Session.get(),
     pharmacie: null,
+    profilStatut: null, // 'ok' | 'absent' (aucune pharmacie liée) | 'erreur'
     abonnement: null,
     forfaits: [],
     annonces: [],
@@ -155,7 +156,7 @@
   async function verifierAcces(feature, codeFonctionnalite) {
     // Le contrôle d'accès porte sur la pharmacie, pas sur l'utilisateur :
     // code_pharmacie (PHARM…) et code_utilisateur (GERANT…) sont distincts.
-    if (!state.pharmacie && !state.profilEnErreur) await chargerProfil();
+    if (!state.pharmacie && !state.profilStatut) await chargerProfil();
     const codePharmacie = state.pharmacie && state.pharmacie.code_pharmacie;
     if (!codePharmacie) {
       state.acces[feature] = false;
@@ -164,11 +165,20 @@
     try {
       const reponse = await Api.post(Endpoints.verifierAcces, {
         code_pharmacie: codePharmacie,
+        // Compatibilité : les API déployées avant le correctif attendent le
+        // code gérant (GERANT…) et ignorent `code_pharmacie`.
+        code_gerant: code(),
         code_fonctionnalite: codeFonctionnalite,
       });
 
       const data = reponse && reponse.data ? reponse.data : reponse;
-      const acces = data && data.acces !== undefined ? data.acces : reponse.success === true;
+      /* Réponse inexploitable (ex. `{success:false}` sans champ `acces`) :
+         on refuse par défaut plutôt que d'ouvrir un module payant. */
+      if (!data || data.acces === undefined) {
+        state.acces[feature] = false;
+        return false;
+      }
+      const acces = data.acces === true || data.acces === 1;
 
       state.acces[feature] = acces;
       if (data && data.restant !== undefined && data.limite) {
@@ -244,19 +254,27 @@
 
   async function chargerProfil() {
     state.profilEnErreur = false;
+    state.profilStatut = null;
     try {
       const reponse = await Api.post(Endpoints.profilPharmacie, { code_gerant: code() });
-      state.pharmacie = payloadData(reponse);
+      const data = payloadData(reponse);
+      /* L'API répond 200 même lorsqu'aucune pharmacie n'est liée au gérant
+         (`{success:false, message:"Aucune pharmacie trouvé"}`). On ne conserve
+         que le vrai profil : sans `code_pharmacie`, les appels suivants
+         enverraient « undefined » et déclencheraient un 403. */
+      state.pharmacie = data && data.code_pharmacie ? data : null;
+      state.profilStatut = state.pharmacie ? 'ok' : 'absent';
     } catch (err) {
       state.pharmacie = null;
       state.profilEnErreur = true;
+      state.profilStatut = 'erreur';
       Toast.warning('Profil pharmacie indisponible pour le moment.');
     }
   }
 
   async function chargerAbonnement() {
     // L'abonnement est rattaché à la pharmacie (code_pharmacie), pas au gérant.
-    if (!state.pharmacie && !state.profilEnErreur) await chargerProfil();
+    if (!state.pharmacie && !state.profilStatut) await chargerProfil();
     const codePharmacie = state.pharmacie && state.pharmacie.code_pharmacie;
     if (!codePharmacie) {
       state.abonnement = null;
@@ -308,28 +326,27 @@
   }
 
   async function chargerHistorique() {
+    // L'historique porte sur la pharmacie (PHARM…), pas sur le gérant
+    // (GERANT… renvoyé par la session) : la route refuse tout autre code.
+    if (!state.pharmacie && !state.profilStatut) await chargerProfil();
+    const codePharmacie = state.pharmacie && state.pharmacie.code_pharmacie;
+    if (!codePharmacie) {
+      state.historique = [];
+      return;
+    }
     try {
-      const reponse = await Api.get(`${Endpoints.historique}/${code()}`);
+      const reponse = await Api.get(`${Endpoints.historique}/${codePharmacie}`);
       state.historique = tableau(payloadData(reponse));
     } catch (err) {
       state.historique = [];
     }
   }
 
-  /* Consommation du forfait : la route n'est appelée que lorsqu'un abonnement
-     est en cours (sinon il n'y a rien à mesurer et l'API ne fournit pas encore
-     la donnée pour le forfait gratuit). */
+  /* Consommation du forfait : l'API n'expose pas encore de route dédiée
+     (`/abonnements/utilisation` répond 404). On n'appelle donc rien et le
+     panneau affiche son état vide au lieu de provoquer une erreur réseau. */
   async function chargerUtilisation() {
-    if (!state.abonnement) {
-      state.utilisation = [];
-      return;
-    }
-    try {
-      const reponse = await Api.get(`${Endpoints.utilisation}/${code()}`);
-      state.utilisation = tableau(payloadData(reponse));
-    } catch (err) {
-      state.utilisation = [];
-    }
+    state.utilisation = [];
   }
 
   async function chargerTout() {
@@ -339,9 +356,9 @@
       chargerAnnonces(),
       chargerAbonnes(),
       chargerAssurances(),
-      chargerHistorique(),
     ]);
-    // L'abonnement dépend du code pharmacie : on le charge après le profil.
+    // Historique et abonnement dépendent du code pharmacie : après le profil.
+    await chargerHistorique();
     await chargerAbonnement();
     await chargerUtilisation();
     renderGlobal();
@@ -1092,7 +1109,20 @@
     }
 
     if (!state.pharmacie) {
-      await creerPharmacie();
+      /* Création uniquement si l'API a confirmé qu'aucune pharmacie n'est
+         rattachée au compte. Sur une erreur réseau ou un profil illisible, on
+         n'écrit rien (sinon : doublon de pharmacie ou 403 avec un code vide). */
+      if (state.profilStatut === 'absent') {
+        await creerPharmacie();
+      } else {
+        Toast.error('Profil pharmacie indisponible. Rechargez la page avant d\'enregistrer.');
+      }
+      return;
+    }
+
+    const codePharmacie = state.pharmacie.code_pharmacie;
+    if (!codePharmacie) {
+      Toast.error('Code pharmacie manquant. Rechargez la page avant d\'enregistrer.');
       return;
     }
 
@@ -1102,7 +1132,7 @@
 
     const dimancheActif = $('#ouvert-dimanche').checked;
     const form = new FormData();
-    form.append('code_pharmacie', state.pharmacie.code_pharmacie);
+    form.append('code_pharmacie', codePharmacie);
     form.append('nom_pharmacie', nom);
     form.append('ville_pharmacie', $('#ville').value.trim() || 'Abidjan');
     form.append('adresse_fournit', adresse);

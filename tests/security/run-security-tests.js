@@ -257,6 +257,29 @@ let codePharmacieB = null;
 
 const PAYLOAD_XSS = `<img src=x onerror=alert(1)>`;
 
+/**
+ * Supprime les assurances de test laissées par un run précédent (payload XSS,
+ * nom vide) ainsi que leurs liens avec des pharmacies. Sans cela, la liste
+ * d'assurances du front se remplit de doublons malveillants à chaque exécution.
+ * Base locale uniquement (le harnais refuse toute cible distante).
+ *
+ * `inclureSecurite` supprime aussi `NSIA_Securite` : à réserver au nettoyage
+ * initial, une fois les gérants de test supprimés (sinon la clé étrangère
+ * `utilisateurs.id_assurance` pointerait dans le vide).
+ */
+async function nettoyerAssurancesTest(conn, { inclureSecurite = false } = {}) {
+  const noms = inclureSecurite ? [PAYLOAD_XSS, ``, `NSIA_Securite`] : [PAYLOAD_XSS, ``];
+  const marques = noms.map(() => `?`).join(`, `);
+  await conn.execute(
+    `DELETE FROM pharmacie_assurance WHERE id_assurance IN (SELECT id_assurance FROM assurances WHERE nom_assurance IN (${marques}))`,
+    noms
+  );
+  await conn.execute(
+    `DELETE FROM assurances WHERE nom_assurance IN (${marques})`,
+    noms
+  );
+}
+
 async function insererDonneesTest() {
   console.log(`\n--- Insertion SQL des données de test (base locale) ---`);
   const conn = await getDb();
@@ -278,6 +301,8 @@ async function insererDonneesTest() {
   }
   await conn.execute(`DELETE FROM adresse_utilisateur WHERE code_utilisateur LIKE 'USER_UP_%'`);
   await conn.execute(`DELETE FROM utilisateurs WHERE code_utilisateur LIKE 'USER_UP_%'`);
+
+  await nettoyerAssurancesTest(conn, { inclureSecurite: true });
 
   await conn.execute(`INSERT IGNORE INTO villes (nom_ville) VALUES (?)`, [`Abidjan`]);
   const [villeRow] = await conn.execute(`SELECT id_ville FROM villes WHERE nom_ville = 'Abidjan' LIMIT 1`);
@@ -1209,6 +1234,15 @@ async function main() {
     // Un « reflet brut » du payload dans une réponse JSON n'est pas une XSS ;
     // le seul test pertinent est le rendu réel dans les pages (Playwright).
     await testXSSPlaywright();
+
+    // Nettoyage final : ne pas laisser les payloads XSS dans la liste des
+    // assurances (ils réapparaîtraient dans le front au run suivant).
+    try {
+      const conn = await getDb();
+      await nettoyerAssurancesTest(conn);
+    } catch (e) {
+      /* best-effort */
+    }
 
     if (dbConn) await dbConn.end();
 

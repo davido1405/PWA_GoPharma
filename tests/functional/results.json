@@ -3,49 +3,49 @@
   "ok": 75,
   "fail": 0,
   "bloque": 2,
-  "date": "2026-10-24T13:16:40.855Z",
+  "date": "2026-10-25T11:07:25.471Z",
   "results": [
     {
       "section": "1",
       "id": "1.1·accueil",
       "intitule": "Chargement Accueil (DOM prêt)",
       "statut": "OK",
-      "preuve": "DOM prêt en 26 ms (seuil 3 s = réseau 4G, ici local)"
+      "preuve": "DOM prêt en 31 ms (seuil 3 s = réseau 4G, ici local)"
     },
     {
       "section": "1",
       "id": "1.1·annuaire",
       "intitule": "Chargement Annuaire (DOM prêt)",
       "statut": "OK",
-      "preuve": "DOM prêt en 27 ms (seuil 3 s = réseau 4G, ici local)"
+      "preuve": "DOM prêt en 25 ms (seuil 3 s = réseau 4G, ici local)"
     },
     {
       "section": "1",
       "id": "1.1·carte",
       "intitule": "Chargement Carte (DOM prêt)",
       "statut": "OK",
-      "preuve": "DOM prêt en 57 ms (seuil 3 s = réseau 4G, ici local)"
+      "preuve": "DOM prêt en 41 ms (seuil 3 s = réseau 4G, ici local)"
     },
     {
       "section": "1",
       "id": "1.1·connexion",
       "intitule": "Chargement Connexion (DOM prêt)",
       "statut": "OK",
-      "preuve": "DOM prêt en 19 ms (seuil 3 s = réseau 4G, ici local)"
+      "preuve": "DOM prêt en 22 ms (seuil 3 s = réseau 4G, ici local)"
     },
     {
       "section": "1",
       "id": "1.1·inscription",
       "intitule": "Chargement Inscription (DOM prêt)",
       "statut": "OK",
-      "preuve": "DOM prêt en 32 ms (seuil 3 s = réseau 4G, ici local)"
+      "preuve": "DOM prêt en 28 ms (seuil 3 s = réseau 4G, ici local)"
     },
     {
       "section": "1",
       "id": "1.1·dashboard",
       "intitule": "Chargement Espace pharmacie (DOM prêt)",
       "statut": "OK",
-      "preuve": "DOM prêt en 53 ms (seuil 3 s = réseau 4G, ici local)"
+      "preuve": "DOM prêt en 55 ms (seuil 3 s = réseau 4G, ici local)"
     },
     {
       "section": "1",
@@ -388,7 +388,7 @@
       "id": "5.6",
       "intitule": "Connexion réussie : l'espace pharmacie s'affiche",
       "statut": "OK",
-      "preuve": "URL = http://127.0.0.1:8081/dashboard.php"
+      "preuve": "URL = http://localhost:8080/dashboard"
     },
     {
       "section": "5",
@@ -437,14 +437,14 @@
       "id": "5.7",
       "intitule": "Déconnexion : retour connexion + session effacée",
       "statut": "OK",
-      "preuve": "URL=http://127.0.0.1:8081/connexion.php sessionStorage=vide localStorage=vide"
+      "preuve": "URL=http://localhost:8080/connexion sessionStorage=vide localStorage=vide"
     },
     {
       "section": "5",
       "id": "5.13",
       "intitule": "Visiteur non connecté sur l'espace pharmacie → connexion",
       "statut": "OK",
-      "preuve": "URL finale = http://127.0.0.1:8081/connexion.php (garde côté client uniquement : dashboard.php est servi à tous)"
+      "preuve": "URL finale = http://localhost:8080/connexion (garde côté client uniquement : dashboard.php est servi à tous)"
     },
     {
       "section": "6",

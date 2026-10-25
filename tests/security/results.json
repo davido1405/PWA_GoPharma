@@ -29,7 +29,7 @@
     {
       "name": "Connexion upload (gérant dédié)",
       "status": "OK",
-      "preuve": "jeton récupéré (USER_UP_mvmh24e6zrt6)",
+      "preuve": "jeton récupéré (USER_UP_mvnq6zmnvh00)",
       "gravite": "Faible",
       "detail": ""
     },
@@ -414,7 +414,7 @@
     {
       "name": "Injection Node SLEEP(3)",
       "status": "OK",
-      "preuve": "réponse en 142 ms sans trace",
+      "preuve": "réponse en 156 ms sans trace",
       "gravite": "Faible",
       "detail": ""
     },
@@ -575,14 +575,14 @@
     {
       "name": "Upload témoin (image valide -> 201)",
       "status": "OK",
-      "preuve": "HTTP 201 — {\"success\":true,\"message\":\"Votre pharmacie a été enregistrée avec succès !\",\"data\":{\"code_pharmacie\":\"PHARM-20261024-5FMCB\",\"nom_pharmacie\":\"Pharmacie Upload mvmh24e6zrt6\",\"photo_url\":\"https://mock.cloudinary.local/pharm",
+      "preuve": "HTTP 201 — {\"success\":true,\"message\":\"Votre pharmacie a été enregistrée avec succès !\",\"data\":{\"code_pharmacie\":\"PHARM-20261025-NX06J\",\"nom_pharmacie\":\"Pharmacie Upload mvnq6zmnvh00\",\"photo_url\":\"https://mock.cloudinary.local/pharm",
       "gravite": "Faible",
       "detail": ""
     },
     {
       "name": "PIN stocké en clair ?",
       "status": "OK",
-      "preuve": "valeur=\"$2b$10$tpGMoUzpJS9D3Gihz3XZa.au7T8jAzx9i…\" bcrypt=oui",
+      "preuve": "valeur=\"$2b$10$Xv6Xcb9Vg7wffSMmsMXxruW5C8gtLWnx.…\" bcrypt=oui",
       "gravite": "Faible",
       "detail": ""
     },
