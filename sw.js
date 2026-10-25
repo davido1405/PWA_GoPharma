@@ -11,8 +11,10 @@
         « aucune pharmacie » non confondu avec un profil chargé, plus d'appel
         à la route inexistante /abonnements/utilisation.
    v9 : photo publiée en PUT (la route modifierpharmacie n'accepte pas POST) et
-        champs latitude/longitude + bouton « position actuelle » dans le profil. */
-const CACHE_NAME = 'gopharma-v9';
+        champs latitude/longitude + bouton « position actuelle » dans le profil.
+   v10 : localisation GPS également proposée à l'étape « profil de votre
+         pharmacie » de l'inscription. */
+const CACHE_NAME = 'gopharma-v10';
 const DATA_CACHE = 'gopharma-data-v1';
 const ASSETS = [
   '/',

@@ -48,7 +48,7 @@ re-sondée sur le **bon service** (`-7708`, celui de `config/app.php`) : le code
 |---|---|---|
 | 1 | **Recette fonctionnelle** | **77 vérifs / 75 OK / 0 FAIL / 2 BLOQUÉ** (`tests/functional/results.json`, exécution du 24/10) — les 2 BLOQUÉ sont nommés et expliqués au §2.1 |
 | 2 | **Sécurité** | **90 tests / 90 OK / 0 FAIL / 0 BLOQUÉ** (`RAPPORT_SECURITE.md` §8) — le total est passé de 91 à 90, justification au §2.2 |
-| 3 | **Smoke tests (jsdom, données simulées)** | `npm test` → exit 0 : liens/IDs, landing 12/12, connexion 12/12, **inscription 22/22**, création 21/21, **dashboard 35/35** |
+| 3 | **Smoke tests (jsdom, données simulées)** | `npm test` → exit 0 : liens/IDs, landing 12/12, connexion 12/12, **inscription 25/25**, création 21/21, **dashboard 35/35** |
 | 4 | **Intégrité des liens / IDs** | `npm run check` → « Tous les liens locaux existent » |
 | 5 | **Aucune erreur JavaScript** | ligne `1.2` : « aucune erreur JS » sur les 6 pages |
 | 6 | **Aucune donnée fictive** | `DEMO_MODE` absent ; `demo-banner` absent ; écrans verrouillés vérifiés par le harnais |

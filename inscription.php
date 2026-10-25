@@ -211,6 +211,27 @@ require_once __DIR__ . '/config/app.php';
               </div>
             </div>
 
+            <div>
+              <div class="flex items-center justify-between gap-3">
+                <span class="label">Localisation GPS <span class="font-normal text-slate-400">(facultatif)</span></span>
+                <button id="btn-position" type="button" class="text-xs font-semibold text-brand-700 hover:text-brand-800">
+                  Utiliser ma position actuelle
+                </button>
+              </div>
+              <div class="grid gap-5 sm:grid-cols-2">
+                <div>
+                  <label class="label" for="latitude">Latitude</label>
+                  <input id="latitude" name="latitude" type="number" step="any" min="-90" max="90" class="input" placeholder="Ex. 5.35995" />
+                </div>
+                <div>
+                  <label class="label" for="longitude">Longitude</label>
+                  <input id="longitude" name="longitude" type="number" step="any" min="-180" max="180" class="input" placeholder="Ex. -4.00826" />
+                </div>
+              </div>
+              <p class="mt-1.5 hidden text-xs font-medium text-red-600" data-error-for="coordonnees"></p>
+              <p class="mt-1.5 text-xs text-slate-400">Aide les patients à vous localiser sur la carte.</p>
+            </div>
+
             <div class="grid gap-5 sm:grid-cols-3">
               <div>
                 <label class="label" for="horaire-semaine">Semaine</label>

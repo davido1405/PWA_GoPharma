@@ -78,6 +78,53 @@
     return el ? el.value.trim() : '';
   }
 
+  /* ------------------------------ Localisation ----------------------------- */
+
+  /* Renvoie null si aucun GPS n'est saisi, false si la saisie est incomplète ou
+     invalide, sinon les deux valeurs à transmettre. */
+  function coordonneesSaisies() {
+    const latitude = valeur('latitude');
+    const longitude = valeur('longitude');
+    if (!latitude && !longitude) return null;
+    if (!latitude || !longitude) return false;
+
+    const lat = Number(latitude);
+    const lon = Number(longitude);
+    if (
+      !Number.isFinite(lat) ||
+      !Number.isFinite(lon) ||
+      lat < -90 ||
+      lat > 90 ||
+      lon < -180 ||
+      lon > 180
+    ) {
+      return false;
+    }
+    return { latitude, longitude };
+  }
+
+  function remplirPositionActuelle() {
+    if (!navigator.geolocation) {
+      afficherErreur("La géolocalisation n'est pas disponible sur ce navigateur.");
+      return;
+    }
+
+    const bouton = document.getElementById('btn-position');
+    bouton.disabled = true;
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        document.getElementById('latitude').value = position.coords.latitude.toFixed(6);
+        document.getElementById('longitude').value = position.coords.longitude.toFixed(6);
+        bouton.disabled = false;
+      },
+      () => {
+        bouton.disabled = false;
+        afficherErreur('Impossible de récupérer votre position. Saisissez les coordonnées manuellement.');
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
+  }
+
   /* -------------------------------- Photo --------------------------------- */
 
   const TAILLE_MAX_PHOTO = 5 * 1024 * 1024; // 5 Mo
@@ -269,6 +316,11 @@
       valide = false;
     }
 
+    if (coordonneesSaisies() === false) {
+      setError('coordonnees', 'Renseignez une latitude et une longitude valides (ou laissez les deux champs vides).');
+      valide = false;
+    }
+
     return valide;
   }
 
@@ -305,8 +357,16 @@
     formulaire.append('horaires_en_semaine', valeur('horaire-semaine') || '08:30 - 21:30');
     formulaire.append('horaires_samedi', valeur('horaire-samedi') || '08:30 - 15:30');
     formulaire.append('horaires_dimanche', valeur('horaire-dimanche') || 'Fermée');
-    formulaire.append('latitudePharmacie', '0');
-    formulaire.append('longitudePharmacie', '0');
+
+    const coordonnees = coordonneesSaisies();
+    if (coordonnees) {
+      formulaire.append('latitudePharmacie', coordonnees.latitude);
+      formulaire.append('longitudePharmacie', coordonnees.longitude);
+    } else {
+      /* Valeur par défaut attendue par l'API : coordonnées non renseignées. */
+      formulaire.append('latitudePharmacie', '0');
+      formulaire.append('longitudePharmacie', '0');
+    }
 
     const choisies = Array.from(form.querySelectorAll('input[name="assurances"]:checked'))
       .map((case_) => case_.value);
@@ -419,6 +479,11 @@
       afficherErreurPhoto('');
       reinitialiserPhoto();
     });
+  }
+
+  const boutonPosition = document.getElementById('btn-position');
+  if (boutonPosition) {
+    boutonPosition.addEventListener('click', remplirPositionActuelle);
   }
 
   form.addEventListener('submit', async (event) => {

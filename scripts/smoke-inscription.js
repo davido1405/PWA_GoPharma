@@ -156,6 +156,7 @@ async function scenario() {
     verifier('Session enregistrée', w.sessionStorage.getItem('gopharma.pharmacie.session') !== null);
     verifier('Assurances proposées', $('#assurances-liste').querySelectorAll('input').length === ASSURANCES.length);
     verifier('Bouton « plus tard » proposé à l\'étape 3', $('#btn-plus-tard').hidden === false);
+    verifier('Bouton « position actuelle » proposé', $('#btn-position') !== null);
     verifier(
       'Bouton principal « Créer ma pharmacie »',
       $('#btn-suivant [data-label]').textContent === 'Créer ma pharmacie',
@@ -169,6 +170,14 @@ async function scenario() {
 
     $('#nom-pharmacie').value = 'Pharmacie des Palmiers';
     $('#numero-pharmacie').value = '0542157865';
+
+    // Coordonnées incomplètes : la création doit être bloquée.
+    $('#latitude').value = '5.359951';
+    soumettre();
+    await attendre(() => ! $('[data-error-for="coordonnees"]').classList.contains('hidden'));
+    verifier('Coordonnées partielles refusées', appels.pharmacie === null);
+
+    $('#longitude').value = '-4.008256';
     soumettre();
     await attendre(() => appels.pharmacie !== null);
 
@@ -184,6 +193,12 @@ async function scenario() {
     );
     verifier('Horaires transmis', Boolean(appels.pharmacie.get('horaires_en_semaine')));
     verifier('Assurances cochées transmises', appels.pharmacie.get('liste_assurance_accepte') !== null);
+    verifier(
+      'Coordonnées GPS transmises',
+      appels.pharmacie.get('latitudePharmacie') === '5.359951' &&
+        appels.pharmacie.get('longitudePharmacie') === '-4.008256',
+      `${appels.pharmacie.get('latitudePharmacie')} / ${appels.pharmacie.get('longitudePharmacie')}`
+    );
     verifier('Aucune erreur JS', erreurs.length === 0, erreurs.join(' | '));
   } catch (e) {
     verifier('Exécution', false, e.message);
