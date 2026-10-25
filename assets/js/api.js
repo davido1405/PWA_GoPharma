@@ -256,7 +256,6 @@ const Endpoints = {
   modifierPharmacie: '/pharmacie/modifierpharmacie',
   pharmacies: '/pharmacie',
   rechercherPharmacies: '/pharmacie/rechercher',
-  uploadPhoto: '/pharmacie/upload-photo',
   forfaits: '/abonnements/forfaits',
   abonnementActif: '/abonnements/actif',
   historique: '/abonnements/historique',

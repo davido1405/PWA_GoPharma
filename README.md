@@ -21,7 +21,7 @@ production. Le code Flutter de l'application (partie utilisateur/client) n'a
 | Fichier          | Rôle |
 | ---------------- | ---- |
 | `index.php`      | Landing page : présentation, fonctionnalités, étapes, forfaits |
-| `inscription.php`| Inscription en 3 étapes (infos perso → code PIN → infos pharmacie) |
+| `inscription.php`| Inscription en 3 étapes (infos perso → code PIN → infos pharmacie facultatives, créables plus tard depuis le tableau de bord) |
 | `connexion.php`  | Connexion du gérant (numéro + code PIN) |
 | `dashboard.php`  | Tableau de bord (navigation par ancre `#/vue`) : accueil, profil pharmacie (+ création de pharmacie), annonces, newsletter, statistiques, abonnement |
 
@@ -158,7 +158,6 @@ navigateur ── /api/... ──▶ router.php (dev) ou .htaccess (prod)
 | Profil pharmacie       | POST    | `/pharmacie/profilPharmacie`           |
 | Création pharmacie     | POST    | `/pharmacie/ajouterPharmacie`          |
 | Mise à jour du profil  | PUT     | `/pharmacie/modifierpharmacie`         |
-| Photo de la pharmacie  | POST    | `/pharmacie/upload-photo`              |
 | Statut de garde        | PUT     | `/pharmacie/modifierstatutgarde`       |
 | Liste des assurances   | GET     | `/assurance`                           |
 | Forfaits               | GET     | `/abonnements/forfaits`                |

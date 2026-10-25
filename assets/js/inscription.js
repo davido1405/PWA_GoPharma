@@ -7,6 +7,7 @@
   const sousTitre = document.getElementById('step-subtitle');
   const bouton = document.getElementById('btn-suivant');
   const retour = document.getElementById('btn-retour');
+  const plusTard = document.getElementById('btn-plus-tard');
   const togglePin = document.getElementById('toggle-pin');
 
   if (Session.get() && Session.code()) {
@@ -24,7 +25,7 @@
   const SOUS_TITRES = {
     1: 'Étape 1 sur 3 — vos informations personnelles.',
     2: 'Étape 2 sur 3 — la sécurité de votre compte.',
-    3: 'Étape 3 sur 3 — le profil de votre pharmacie.',
+    3: 'Étape 3 sur 3 (facultative) — le profil de votre pharmacie.',
   };
 
   /* ------------------------------ Utilitaires ----------------------------- */
@@ -54,7 +55,7 @@
   }
 
   function labelBouton() {
-    if (etape === 3) return 'Créer mon compte';
+    if (etape === 3) return 'Créer ma pharmacie';
     return 'Continuer';
   }
 
@@ -153,6 +154,7 @@
 
     sousTitre.textContent = SOUS_TITRES[numero] || '';
     retour.hidden = numero === 1;
+    if (plusTard) plusTard.hidden = numero !== 3;
     bouton.querySelector('[data-label]').textContent = labelBouton();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -346,6 +348,14 @@
     effacerErreurs();
     definirEtape(Math.max(1, etape - 1));
   });
+
+  /* Le compte gérant est déjà créé à l'étape 2 : la pharmacie peut être
+     renseignée plus tard depuis le tableau de bord. */
+  if (plusTard) {
+    plusTard.addEventListener('click', () => {
+      window.location.href = '/dashboard#/profil';
+    });
+  }
 
   const champPhoto = document.getElementById('photo');
   const photoErreur = document.getElementById('photo-error');

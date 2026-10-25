@@ -177,8 +177,8 @@ require_once __DIR__ . '/config/app.php';
           <!-- Étape 3 -->
           <section data-step="3" class="hidden space-y-5">
             <div class="rounded-xl border border-brand-100 bg-brand-50 p-4 text-sm text-slate-700">
-              Dernière étape : présentez votre pharmacie. Vous pourrez ajuster ces
-              informations à tout moment depuis votre tableau de bord.
+              Dernière étape (facultative) : présentez votre pharmacie. Vous pouvez
+              aussi la créer plus tard depuis votre tableau de bord.
             </div>
 
             <div>
@@ -255,6 +255,9 @@ require_once __DIR__ . '/config/app.php';
           <!-- Actions -->
           <div class="flex flex-col gap-3 sm:flex-row">
             <button id="btn-retour" type="button" class="btn-ghost btn-block sm:w-auto" hidden>Retour</button>
+            <button id="btn-plus-tard" type="button" class="btn-ghost btn-block sm:w-auto" hidden>
+              Je créerai ma pharmacie plus tard
+            </button>
             <button id="btn-suivant" type="submit" class="btn-primary btn-lg btn-block">
               <span data-label>Continuer</span>
               <span data-spinner hidden class="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white"></span>

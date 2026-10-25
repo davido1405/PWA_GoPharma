@@ -1248,18 +1248,24 @@
       return;
     }
 
+    /* La mise à jour de la photo passe par la route de modification : elle est
+       protégée par le contrôle de propriété et accepte les champs optionnels
+       (ici, uniquement `photo`). */
     const form = new FormData();
     form.append('code_pharmacie', state.pharmacie.code_pharmacie);
-    form.append('photo_pharmacie', state.photoSelectionnee);
+    form.append('photo', state.photoSelectionnee);
 
     const bouton = $('#photo-upload');
     bouton.disabled = true;
 
     try {
-      const reponse = await Api.send(Endpoints.uploadPhoto, form);
+      const reponse = await Api.send(Endpoints.modifierPharmacie, form);
       if (reponse && reponse.success === false) {
         throw new ApiError(reponse.message || 'Upload impossible', 400);
       }
+      state.photoSelectionnee = null;
+      $('#photo-input').value = '';
+      bouton.hidden = true;
       await chargerProfil();
       renderProfil();
       renderAccueil();

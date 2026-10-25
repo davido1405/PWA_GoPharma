@@ -129,6 +129,7 @@ async function scenario() {
     verifier('Étiquette de l\'étape 2',
       $('#step-subtitle').textContent.toLowerCase().includes('étape 2'),
       $('#step-subtitle').textContent);
+    verifier('Bouton « plus tard » masqué avant l\'étape 3', $('#btn-plus-tard').hidden === true);
 
     // Étape 2 : confirmation PIN erronée.
     $('#pin').value = '123456';
@@ -154,6 +155,12 @@ async function scenario() {
     verifier('Passage à l\'étape pharmacie', visible('[data-step="3"]'));
     verifier('Session enregistrée', w.sessionStorage.getItem('gopharma.pharmacie.session') !== null);
     verifier('Assurances proposées', $('#assurances-liste').querySelectorAll('input').length === ASSURANCES.length);
+    verifier('Bouton « plus tard » proposé à l\'étape 3', $('#btn-plus-tard').hidden === false);
+    verifier(
+      'Bouton principal « Créer ma pharmacie »',
+      $('#btn-suivant [data-label]').textContent === 'Créer ma pharmacie',
+      $('#btn-suivant [data-label]').textContent
+    );
 
     // Étape 3 : champs obligatoires.
     soumettre();
