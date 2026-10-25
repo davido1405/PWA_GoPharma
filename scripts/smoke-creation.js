@@ -175,6 +175,8 @@ function attendre(condition, timeout = 20000) {
 
     $('#nom-pharmacie').value = 'Pharmacie du Plateau';
     $('#email').value = 'contact@plateau.ci';
+    $('#latitude').value = '5.359951';
+    $('#longitude').value = '-4.008256';
     $('#save-profil').dispatchEvent(new w.Event('click', { bubbles: true }));
 
     await attendre(() => appels.some((a) => a.url.includes('/pharmacie/ajouterPharmacie')));
@@ -191,6 +193,11 @@ function attendre(condition, timeout = 20000) {
       String(corps.get('nom_pharmacie')));
     verifier('Assurances cochées transmises', typeof corps.get('liste_assurance_accepte') === 'string',
       String(corps.get('liste_assurance_accepte')));
+    verifier(
+      'Coordonnées GPS transmises',
+      corps.get('latitudePharmacie') === '5.359951' && corps.get('longitudePharmacie') === '-4.008256',
+      `${corps.get('latitudePharmacie')} / ${corps.get('longitudePharmacie')}`
+    );
 
     // ---- Après création : le mode création disparaît ----
     await attendre(() => $('#save-profil-label').textContent === 'Enregistrer les modifications');

@@ -347,6 +347,27 @@ require_once __DIR__ . '/config/app.php';
                 <label class="label" for="email">E-mail</label>
                 <input id="email" class="input" type="email" placeholder="E-mail pharmacie" />
               </div>
+              <div>
+                <div class="flex items-center justify-between gap-3">
+                  <p class="label">Localisation GPS</p>
+                  <button id="btn-position" type="button" class="text-xs font-semibold text-brand-700 hover:text-brand-800">
+                    Utiliser ma position actuelle
+                  </button>
+                </div>
+                <div class="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label class="label" for="latitude">Latitude</label>
+                    <input id="latitude" class="input" type="number" step="any" min="-90" max="90" placeholder="Ex. 5.35995" />
+                  </div>
+                  <div>
+                    <label class="label" for="longitude">Longitude</label>
+                    <input id="longitude" class="input" type="number" step="any" min="-180" max="180" placeholder="Ex. -4.00826" />
+                  </div>
+                </div>
+                <p class="mt-1.5 text-xs text-slate-400">
+                  Facultatif — aide les patients à vous localiser sur la carte.
+                </p>
+              </div>
             </form>
           </div>
 

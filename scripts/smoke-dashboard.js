@@ -94,6 +94,7 @@ const fixtures = {
     { id_abonnement: 3, nom_forfait: 'Standard', prix: 15000, date_debut: '2026-09-10', date_fin: '2026-10-10', libelle_statut: 'Actif' },
   ],
   '/api/abonnements/verifier-acces': { acces: true, limite: 5, utilise: 2, restant: 3 },
+  '/api/pharmacie/modifierpharmacie': { success: true, message: 'ok' },
 };
 
 function reponse(data) {
@@ -106,6 +107,7 @@ function reponse(data) {
 }
 
 const erreurs = [];
+const appelsApi = [];
 const virtualConsole = new VirtualConsole();
 virtualConsole.on('jsdomError', (e) => erreurs.push(`jsdomError: ${e.message}`));
 virtualConsole.on('error', (...args) => erreurs.push(`console.error: ${args.join(' ')}`));
@@ -150,9 +152,11 @@ function attendre(condition, timeout = 20000) {
       };
       window.scrollTo = () => {};
       window.HTMLElement.prototype.scrollIntoView = () => {};
+      window.URL.createObjectURL = () => 'blob:photo-test';
 
-      window.fetch = async (url) => {
+      window.fetch = async (url, init = {}) => {
         const cible = typeof url === 'string' ? url : url.toString();
+        appelsApi.push({ url: cible, init });
         const cle = Object.keys(fixtures).find((k) => cible.includes(k));
         if (cle) return reponse(fixtures[cle]);
         return {
@@ -191,6 +195,26 @@ function attendre(condition, timeout = 20000) {
 
     verifier('Horaire semaine renseigné', $('#h-sem-ouverture').value === '10:30' && $('#h-sem-fermeture').value === '21:30', `${$('#h-sem-ouverture').value}-${$('#h-sem-fermeture').value}`);
     verifier('Dimanche fermé', $('#ouvert-dimanche').checked === false);
+
+    // ---- Publication de la photo : doit passer en PUT ----
+    const fichier = new w.File(['image'], 'photo.png', { type: 'image/png' });
+    Object.defineProperty($('#photo-input'), 'files', { value: [fichier], configurable: true });
+    $('#photo-input').dispatchEvent(new w.Event('change', { bubbles: true }));
+    await attendre(() => $('#photo-upload').hidden === false);
+    $('#photo-upload').dispatchEvent(new w.Event('click', { bubbles: true }));
+
+    await attendre(() => appelsApi.some((a) => a.url.includes('/pharmacie/modifierpharmacie')));
+    const appelPhoto = appelsApi.find((a) => a.url.includes('/pharmacie/modifierpharmacie'));
+    verifier('Photo publiée via PUT (pas POST)', appelPhoto.init.method === 'PUT', String(appelPhoto.init.method));
+    verifier(
+      'Photo et code pharmacie transmis',
+      appelPhoto.init.body instanceof w.FormData &&
+        appelPhoto.init.body.get('code_pharmacie') === 'PHARM-20260304-O9NH2' &&
+        Boolean(appelPhoto.init.body.get('photo')),
+      appelPhoto.init.body instanceof w.FormData ? String(appelPhoto.init.body.get('code_pharmacie')) : 'corps non FormData'
+    );
+    await attendre(() => $('#photo-upload').hidden === true);
+    verifier('Bouton de publication masqué après succès', $('#photo-upload').hidden === true);
 
     w.location.hash = '#/annonces';
     await attendre(() => !w.document.querySelector('[data-view="annonces"]').classList.contains('hidden'));

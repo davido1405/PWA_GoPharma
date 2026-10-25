@@ -488,6 +488,8 @@
       $('#adresse').value = (state.session && state.session.adresseUtilisateur) || '';
       $('#telephone').value = (state.session && state.session.numeroUtilisateur) || '';
       $('#email').value = '';
+      $('#latitude').value = '';
+      $('#longitude').value = '';
 
       const preview = $('#photo-preview');
       const placeholder = $('#photo-placeholder');
@@ -509,6 +511,8 @@
     $('#adresse').value = p.adresse_fournit || '';
     $('#telephone').value = p.numeros_pharmacie || '';
     $('#email').value = p.email_pharmacie || '';
+    $('#latitude').value = coordonneeAffichable(p.latitude);
+    $('#longitude').value = coordonneeAffichable(p.longitude);
 
     const preview = $('#photo-preview');
     const placeholder = $('#photo-placeholder');
@@ -1098,6 +1102,71 @@
     return `${ouverture} - ${fermeture}`;
   }
 
+  /* L'API renvoie 0/0 lorsqu'aucune coordonnée n'a été enregistrée : on affiche
+     alors des champs vides plutôt que « 0 », qui n'a pas de sens à Abidjan. */
+  function coordonneeAffichable(valeur) {
+    if (valeur === undefined || valeur === null || valeur === '') return '';
+    const nombre = Number(valeur);
+    if (!Number.isFinite(nombre) || nombre === 0) return '';
+    return String(nombre);
+  }
+
+  /* Renvoie null si aucun GPS n'est saisi, false si la saisie est incomplète ou
+     invalide, sinon les deux valeurs à transmettre. */
+  function coordonneesSaisies() {
+    const latitude = $('#latitude').value.trim();
+    const longitude = $('#longitude').value.trim();
+    if (!latitude && !longitude) return null;
+    if (!latitude || !longitude) return false;
+
+    const lat = Number(latitude);
+    const lon = Number(longitude);
+    if (
+      !Number.isFinite(lat) ||
+      !Number.isFinite(lon) ||
+      lat < -90 ||
+      lat > 90 ||
+      lon < -180 ||
+      lon > 180
+    ) {
+      return false;
+    }
+    return { latitude, longitude };
+  }
+
+  function ajouterCoordonnees(form, coordonnees, defautZero) {
+    if (coordonnees) {
+      form.append('latitudePharmacie', coordonnees.latitude);
+      form.append('longitudePharmacie', coordonnees.longitude);
+    } else if (defautZero) {
+      form.append('latitudePharmacie', '0');
+      form.append('longitudePharmacie', '0');
+    }
+  }
+
+  function remplirPositionActuelle() {
+    if (!navigator.geolocation) {
+      Toast.error("La géolocalisation n'est pas disponible sur ce navigateur.");
+      return;
+    }
+
+    const bouton = $('#btn-position');
+    bouton.disabled = true;
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        $('#latitude').value = position.coords.latitude.toFixed(6);
+        $('#longitude').value = position.coords.longitude.toFixed(6);
+        bouton.disabled = false;
+        Toast.success('Position récupérée. Enregistrez pour la publier.');
+      },
+      () => {
+        bouton.disabled = false;
+        Toast.error('Impossible de récupérer votre position. Saisissez les coordonnées manuellement.');
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
+  }
+
   async function enregistrerProfil() {
     const nom = $('#nom-pharmacie').value.trim();
     const adresse = $('#adresse').value.trim();
@@ -1130,6 +1199,12 @@
       (input) => input.value
     );
 
+    const coordonnees = coordonneesSaisies();
+    if (coordonnees === false) {
+      Toast.error('Renseignez une latitude et une longitude valides (ou laissez les deux champs vides).');
+      return;
+    }
+
     const dimancheActif = $('#ouvert-dimanche').checked;
     const form = new FormData();
     form.append('code_pharmacie', codePharmacie);
@@ -1151,6 +1226,7 @@
       construireHoraire($('#h-dim-ouverture').value, $('#h-dim-fermeture').value, dimancheActif)
     );
     form.append('liste_assurance_accepte', JSON.stringify(assurances));
+    ajouterCoordonnees(form, coordonnees, false);
     if (state.photoSelectionnee) form.append('photo', state.photoSelectionnee);
 
     const bouton = $('#save-profil');
@@ -1191,6 +1267,11 @@
     const assurances = $$('#assurances-list input[name="assurance"]:checked').map(
       (input) => input.value
     );
+    const coordonnees = coordonneesSaisies();
+    if (coordonnees === false) {
+      Toast.error('Renseignez une latitude et une longitude valides (ou laissez les deux champs vides).');
+      return;
+    }
     const dimancheActif = $('#ouvert-dimanche').checked;
 
     const form = new FormData();
@@ -1213,8 +1294,7 @@
       construireHoraire($('#h-dim-ouverture').value, $('#h-dim-fermeture').value, dimancheActif)
     );
     form.append('liste_assurance_accepte', JSON.stringify(assurances));
-    form.append('latitudePharmacie', '0');
-    form.append('longitudePharmacie', '0');
+    ajouterCoordonnees(form, coordonnees, true);
     if (state.photoSelectionnee) form.append('photo', state.photoSelectionnee);
 
     const bouton = $('#save-profil');
@@ -1259,7 +1339,7 @@
     bouton.disabled = true;
 
     try {
-      const reponse = await Api.send(Endpoints.modifierPharmacie, form);
+      const reponse = await Api.update(Endpoints.modifierPharmacie, form);
       if (reponse && reponse.success === false) {
         throw new ApiError(reponse.message || 'Upload impossible', 400);
       }
@@ -1551,6 +1631,7 @@
       $('#photo-upload').hidden = false;
     });
     $('#photo-upload').addEventListener('click', publierPhoto);
+    $('#btn-position').addEventListener('click', remplirPositionActuelle);
 
     window.addEventListener('hashchange', () => {
       naviguer(window.location.hash);

@@ -9,8 +9,10 @@
    v7 : renouvellement silencieux du jeton (refresh token) dans api.js.
    v8 : correctifs tableau de bord — historique sur le code pharmacie, profil
         « aucune pharmacie » non confondu avec un profil chargé, plus d'appel
-        à la route inexistante /abonnements/utilisation. */
-const CACHE_NAME = 'gopharma-v8';
+        à la route inexistante /abonnements/utilisation.
+   v9 : photo publiée en PUT (la route modifierpharmacie n'accepte pas POST) et
+        champs latitude/longitude + bouton « position actuelle » dans le profil. */
+const CACHE_NAME = 'gopharma-v9';
 const DATA_CACHE = 'gopharma-data-v1';
 const ASSETS = [
   '/',
